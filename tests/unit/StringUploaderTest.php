@@ -1,7 +1,7 @@
 <?php namespace Project\Tests;
 
-use WebChemistry\Image\Testing\FileTestCase;
-use WebChemistry\Image\Uploader\StringUploader;
+use WebChemistry\ImageStorage\Testing\FileTestCase;
+use WebChemistry\ImageStorage\Uploader\StringUploader;
 
 class StringUploaderTest extends FileTestCase
 {

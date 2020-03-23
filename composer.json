@@ -19,12 +19,12 @@
     },
     "autoload": {
 		"psr-4": {
-			"WebChemistry\\Image\\": "src/"
+			"WebChemistry\\ImageStorage\\": "src/"
 		}
 	},
     "autoload-dev": {
         "psr-4": {
-            "WebChemistry\\Image\\Testing\\": "tests/src"
+            "WebChemistry\\ImageStorage\\Testing\\": "tests/src"
         }
     },
     "scripts": {

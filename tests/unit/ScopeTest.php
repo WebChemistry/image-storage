@@ -1,7 +1,7 @@
 <?php namespace Project\Tests;
 
-use WebChemistry\Image\Exceptions\InvalidArgumentException;
-use WebChemistry\Image\Scope\Scope;
+use WebChemistry\ImageStorage\Exceptions\InvalidArgumentException;
+use WebChemistry\ImageStorage\Scope\Scope;
 
 class ScopeTest extends \Codeception\Test\Unit
 {

@@ -1,6 +1,6 @@
 <?php namespace Project\Tests;
 
-use WebChemistry\Image\Entity\PersistentImage;
+use WebChemistry\ImageStorage\Entity\PersistentImage;
 
 class PersistentImageTest extends \Codeception\Test\Unit
 {

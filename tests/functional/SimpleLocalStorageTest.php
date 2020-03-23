@@ -1,11 +1,11 @@
 <?php namespace Project\Tests;
 
-use WebChemistry\Image\Entity\PersistentImageInterface;
-use WebChemistry\Image\Entity\StorableImage;
-use WebChemistry\Image\Scope\Scope;
-use WebChemistry\Image\Storages\SimpleLocalStorage;
-use WebChemistry\Image\Testing\FileTestCase;
-use WebChemistry\Image\Uploader\CopyUploader;
+use WebChemistry\ImageStorage\Entity\PersistentImageInterface;
+use WebChemistry\ImageStorage\Entity\StorableImage;
+use WebChemistry\ImageStorage\Scope\Scope;
+use WebChemistry\ImageStorage\Storages\SimpleLocalStorage;
+use WebChemistry\ImageStorage\Testing\FileTestCase;
+use WebChemistry\ImageStorage\Uploader\CopyUploader;
 
 class SimpleLocalStorageTest extends FileTestCase
 {

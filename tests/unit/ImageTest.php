@@ -1,8 +1,8 @@
 <?php namespace Project\Tests;
 
-use WebChemistry\Image\Entity\Image;
-use WebChemistry\Image\Exceptions\ClosedImageException;
-use WebChemistry\Image\Scope\Scope;
+use WebChemistry\ImageStorage\Entity\Image;
+use WebChemistry\ImageStorage\Exceptions\ClosedImageException;
+use WebChemistry\ImageStorage\Scope\Scope;
 
 class ImageTest extends \Codeception\Test\Unit
 {

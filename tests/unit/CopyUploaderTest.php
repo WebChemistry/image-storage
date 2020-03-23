@@ -1,7 +1,7 @@
 <?php namespace Project\Tests;
 
-use WebChemistry\Image\Testing\FileTestCase;
-use WebChemistry\Image\Uploader\CopyUploader;
+use WebChemistry\ImageStorage\Testing\FileTestCase;
+use WebChemistry\ImageStorage\Uploader\CopyUploader;
 
 class CopyUploaderTest extends FileTestCase
 {
