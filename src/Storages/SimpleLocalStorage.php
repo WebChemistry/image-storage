@@ -51,7 +51,7 @@ class SimpleLocalStorage implements ImageStorageInterface
 
 		$this->filesystem->mkdir($absolutePath);
 
-		$image->getUploader()->save($absolutePath, $image->getName());
+		$image->getUploader()->save(rtrim($absolutePath, '/'), $image->getName());
 
 		$persistent = new PersistentImage($image->getId());
 

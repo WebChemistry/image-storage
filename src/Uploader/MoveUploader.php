@@ -17,7 +17,7 @@ class MoveUploader implements UploaderInterface
 
 	public function save(string $path, string $name): void
 	{
-		if (!@rename($this->filePath, $dest = rtrim($path, '/') . '/' . $name)) {
+		if (!@rename($this->filePath, $dest = $path . '/' . $name)) {
 			throw new CannotSaveFileException(sprintf('Cannot move image "%s" to "%s"', $this->filePath, $dest));
 		}
 	}

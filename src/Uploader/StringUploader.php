@@ -17,7 +17,7 @@ class StringUploader implements UploaderInterface
 
 	public function save(string $path, string $name): void
 	{
-		$filePath = rtrim($path, '/') . '/' . $name;
+		$filePath = $path . '/' . $name;
 		if (@file_put_contents($filePath, $this->content) === false) {
 			throw new CannotSaveFileException(sprintf('File cannot be saved to %s', $filePath));
 		}

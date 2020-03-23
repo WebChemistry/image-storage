@@ -17,7 +17,7 @@ class CopyUploader implements UploaderInterface
 
 	public function save(string $path, string $name): void
 	{
-		if (!@copy($this->filePath, $dest = rtrim($path, '/') . '/' . $name)) {
+		if (!@copy($this->filePath, $dest = $path . '/' . $name)) {
 			throw new CannotSaveFileException(sprintf('Cannot copy image "%s" to "%s"', $this->filePath, $dest));
 		}
 	}
