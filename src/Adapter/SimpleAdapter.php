@@ -3,6 +3,7 @@
 namespace WebChemistry\ImageStorage\Adapter;
 
 use League\Flysystem\FilesystemInterface;
+use WebChemistry\ImageStorage\Configuration\ConfigurationInterface;
 use WebChemistry\ImageStorage\Filter\FilterProcessorInterface;
 use WebChemistry\ImageStorage\Metadata\ImageMetadataFactory;
 use WebChemistry\ImageStorage\Metadata\ImageMetadataFactoryInterface;
@@ -22,15 +23,14 @@ final class SimpleAdapter implements AdapterInterface
 	private ImageMetadataFactoryInterface $metadataFactory;
 
 	public function __construct(
-		string $baseUrl,
-		FilesystemInterface $filesystem,
+		ConfigurationInterface $configuration,
 		?PathResolverInterface $pathResolver = null,
 		?NameResolverInterface $nameResolver = null,
 		FilterProcessorInterface $filterProcessor = null
 	)
 	{
-		$this->baseUrl = $baseUrl;
-		$this->filesystem = $filesystem;
+		$this->baseUrl = $configuration->getBaseUrl();
+		$this->filesystem = $configuration->getFilesystem();
 
 		$this->pathResolver = $pathResolver ?? new PathResolver();
 		$this->nameResolver = $nameResolver ?? new OriginalNameResolver();
