@@ -11,10 +11,6 @@ class StringUploaderTest extends FileTestCase
 	{
 		$uploader = new StringUploader(file_get_contents($this->imageJpg));
 		$this->assertSame(file_get_contents($this->imageJpg), $uploader->getContent());
-
-		$uploader->save($this->getAbsolutePath(), 'test.jpg');
-		$this->assertTempFileExists('test.jpg');
-		$this->assertFileExists($this->imageJpg);
 	}
 
 }

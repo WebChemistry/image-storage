@@ -16,6 +16,13 @@ interface ImageInterface
 
 	public function getFilter(): ?Filter;
 
+	public function hasFilter(): bool;
+
+	/**
+	 * @return static
+	 */
+	public function getOriginal();
+
 	/**
 	 * @return static
 	 */

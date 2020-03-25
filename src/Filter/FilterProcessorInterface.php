@@ -8,6 +8,6 @@ use WebChemistry\ImageStorage\Metadata\ImageMetadataInterface;
 interface FilterProcessorInterface
 {
 
-	public function process(ImageMetadataInterface $metadata, ?string $savePath = null, array $options = []): ?string;
+	public function process(ImageMetadataInterface $metadata, array $options = []): string;
 
 }

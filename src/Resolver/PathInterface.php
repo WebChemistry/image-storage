@@ -6,17 +6,22 @@ interface PathInterface
 {
 
 	/**
-	 * Scope
+	 * Bucket
 	 */
-	public function toScope(): ?string;
+	public function toBucket(): string;
 
 	/**
-	 * Scope + filter
+	 * Bucket + Scope
 	 */
-	public function toFilter(): ?string;
+	public function toScope(): string;
 
 	/**
-	 * Scope + name
+	 * Bucket + Scope + filter
+	 */
+	public function toFilter(): string;
+
+	/**
+	 * Bucket + Scope + name
 	 */
 	public function toStringWithoutFilter(): string;
 

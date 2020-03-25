@@ -48,6 +48,13 @@ abstract class Image implements ImageInterface
 		return $this->filter;
 	}
 
+	public function hasFilter(): bool
+	{
+		$this->throwIfClosed();
+
+		return (bool) $this->filter;
+	}
+
 	public function withName(string $name)
 	{
 		$this->throwIfClosed();
@@ -81,6 +88,17 @@ abstract class Image implements ImageInterface
 
 		$clone = clone $this;
 		$clone->filter = $filter;
+
+		return $clone;
+	}
+
+	/**
+	 * @return static
+	 */
+	public function getOriginal()
+	{
+		$clone = clone $this;
+		$clone->filter = null;
 
 		return $clone;
 	}

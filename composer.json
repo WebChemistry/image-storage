@@ -4,7 +4,7 @@
 	"require": {
 		"php": ">=7.4",
 		"nette/utils": "^3.0",
-		"symfony/filesystem": "^5.0"
+		"league/flysystem": "^1.0"
 	},
     "require-dev": {
         "codeception/codeception": "^4.1",
@@ -15,7 +15,8 @@
         "warengo/qa": "2.0.1",
         "codeception/module-phpbrowser": "^1.0.0",
 		"ramsey/uuid": "^4.0",
-		"doctrine/dbal": "^2.10"
+		"doctrine/dbal": "^2.10",
+		"webchemistry/image-storage-imagine-filters": "dev-master"
     },
     "autoload": {
 		"psr-4": {

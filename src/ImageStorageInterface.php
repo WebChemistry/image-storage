@@ -4,12 +4,11 @@ namespace WebChemistry\ImageStorage;
 
 use WebChemistry\ImageStorage\Entity\ImageInterface;
 use WebChemistry\ImageStorage\Entity\PersistentImageInterface;
-use WebChemistry\ImageStorage\Entity\StorableImageInterface;
 
 interface ImageStorageInterface
 {
 
-	public function persist(StorableImageInterface $image): PersistentImageInterface;
+	public function persist(ImageInterface $image): PersistentImageInterface;
 
 	public function remove(PersistentImageInterface $image): void;
 

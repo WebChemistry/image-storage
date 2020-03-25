@@ -10,10 +10,7 @@ interface ImageMetadataInterface
 
 	public function getImage(): ImageInterface;
 
-	/**
-	 * @return mixed
-	 */
-	public function getSource();
+	public function getContent(): string;
 
 	public function getMimeType(): ImageMimeType;
 
