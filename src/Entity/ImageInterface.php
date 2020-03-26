@@ -29,6 +29,11 @@ interface ImageInterface
 	public function withName(string $name);
 
 	/**
+	 * @return static
+	 */
+	public function withScope(Scope $scope);
+
+	/**
 	 * @param mixed[] $options
 	 * @return static
 	 */

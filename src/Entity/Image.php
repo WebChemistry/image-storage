@@ -55,6 +55,22 @@ abstract class Image implements ImageInterface
 		return (bool) $this->filter;
 	}
 
+	/**
+	 * @return static
+	 */
+	public function withScope(Scope $scope)
+	{
+		$this->throwIfClosed();
+
+		$clone = clone $this;
+		$clone->scope = $scope;
+		
+		return $clone;
+	}
+
+	/**
+	 * @return static
+	 */
 	public function withName(string $name)
 	{
 		$this->throwIfClosed();
