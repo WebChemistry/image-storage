@@ -67,9 +67,14 @@ class LocalStorage implements ImageStorageInterface
 		return $persistent;
 	}
 
-	public function remove(PersistentImageInterface $image): void
+	public function remove(PersistentImageInterface $image): PersistentImageInterface
 	{
 		$this->adapter->getFilesystem()->delete($this->getPath($image)->toString());
+		if ($image instanceof PersistentImage) {
+			$image->close();
+		}
+		
+		return $image;
 	}
 
 	public function toUrl(?PersistentImageInterface $image, array $options = []): ?string

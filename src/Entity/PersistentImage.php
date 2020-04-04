@@ -25,4 +25,9 @@ class PersistentImage extends Image implements PersistentImageInterface
 		return [$name, new Scope(...$explode)];
 	}
 
+	public function close(): void
+	{
+		$this->setClosed();
+	}
+
 }

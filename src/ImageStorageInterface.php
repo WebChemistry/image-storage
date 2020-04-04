@@ -2,15 +2,10 @@
 
 namespace WebChemistry\ImageStorage;
 
-use WebChemistry\ImageStorage\Entity\ImageInterface;
 use WebChemistry\ImageStorage\Entity\PersistentImageInterface;
 
-interface ImageStorageInterface
+interface ImageStorageInterface extends UnitOfWork
 {
-
-	public function persist(ImageInterface $image): PersistentImageInterface;
-
-	public function remove(PersistentImageInterface $image): void;
 
 	public function toUrl(?PersistentImageInterface $image, array $options = []): ?string;
 

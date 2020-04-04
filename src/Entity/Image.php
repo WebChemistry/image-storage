@@ -9,9 +9,9 @@ use WebChemistry\ImageStorage\Scope\Scope;
 abstract class Image implements ImageInterface
 {
 
-	private string $name;
-	private ?Filter $filter = null;
-	private Scope $scope;
+	protected string $name;
+	protected ?Filter $filter = null;
+	protected Scope $scope;
 	private bool $closed = false;
 
 	public function __construct(string $name, ?Scope $scope = null)
@@ -64,7 +64,7 @@ abstract class Image implements ImageInterface
 
 		$clone = clone $this;
 		$clone->scope = $scope;
-		
+
 		return $clone;
 	}
 
@@ -133,7 +133,7 @@ abstract class Image implements ImageInterface
 	{
 		if ($this->closed) {
 			throw new ClosedImageException(
-				sprintf('Image %s is closed', $this->scope->toStringWithTrailingSlash() . $this->name)
+				sprintf('Image %s is closed', $this->getId())
 			);
 		}
 	}
