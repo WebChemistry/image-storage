@@ -1,12 +1,15 @@
-<?php namespace Project\Tests;
+<?php declare(strict_types = 1);
 
+namespace Project\Tests;
+
+use Codeception\Test\Unit;
 use WebChemistry\ImageStorage\Exceptions\InvalidArgumentException;
 use WebChemistry\ImageStorage\Scope\Scope;
 
-class ScopeTest extends \Codeception\Test\Unit
+class ScopeTest extends Unit
 {
 
-	public function testOneScope()
+	public function testOneScope(): void
 	{
 		$scope = new Scope('foo');
 
@@ -14,7 +17,7 @@ class ScopeTest extends \Codeception\Test\Unit
 		$this->assertSame('foo', (string) $scope);
 	}
 
-	public function testMultiScope()
+	public function testMultiScope(): void
 	{
 		$scope = new Scope('foo', 'bar');
 
@@ -22,7 +25,7 @@ class ScopeTest extends \Codeception\Test\Unit
 		$this->assertSame('foo/bar', (string) $scope);
 	}
 
-	public function testWithAppendedScope()
+	public function testWithAppendedScope(): void
 	{
 		$scope = new Scope('foo');
 		$scope = $scope->withAppendedScopes('bar');
@@ -31,7 +34,7 @@ class ScopeTest extends \Codeception\Test\Unit
 		$this->assertSame('foo/bar', (string) $scope);
 	}
 
-	public function testWithPrependedScope()
+	public function testWithPrependedScope(): void
 	{
 		$scope = new Scope('foo');
 		$scope = $scope->withPrependedScopes('bar');
@@ -40,7 +43,7 @@ class ScopeTest extends \Codeception\Test\Unit
 		$this->assertSame('bar/foo', (string) $scope);
 	}
 
-	public function testFromString()
+	public function testFromString(): void
 	{
 		$scope = Scope::fromString('bar/foo');
 
@@ -48,21 +51,21 @@ class ScopeTest extends \Codeception\Test\Unit
 		$this->assertSame('bar/foo', (string) $scope);
 	}
 
-	public function testEmpty()
+	public function testEmpty(): void
 	{
 		$this->expectException(InvalidArgumentException::class);
 
 		new Scope('');
 	}
 
-	public function testInvalidChars()
+	public function testInvalidChars(): void
 	{
 		$this->expectException(InvalidArgumentException::class);
 
 		new Scope('bař');
 	}
 
-	public function testTrailingSlash()
+	public function testTrailingSlash(): void
 	{
 		$this->assertSame('foo/', (new Scope('foo'))->toStringWithTrailingSlash());
 		$this->assertSame('', (new Scope())->toStringWithTrailingSlash());

@@ -1,12 +1,14 @@
-<?php namespace Project\Tests;
+<?php declare(strict_types = 1);
 
+namespace Project\Tests;
+
+use Codeception\Test\Unit;
 use WebChemistry\ImageStorage\Entity\PersistentImage;
 
-class PersistentImageTest extends \Codeception\Test\Unit
+class PersistentImageTest extends Unit
 {
 
-	// tests
-	public function testCreation()
+	public function testCreation(): void
 	{
 		$image = new PersistentImage('name/test.jpg');
 

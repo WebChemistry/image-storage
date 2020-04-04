@@ -9,11 +9,14 @@ abstract class FileTestCase extends Unit
 {
 
 	private Filesystem $filesystem;
+
 	private string $path;
+
 	private string $origImageJpg = __DIR__ . '/../_data/image.jpg';
+
 	protected string $imageJpg = __DIR__ . '/../_data/tmp-image.jpg';
 
-	protected function _before()
+	protected function _before(): void
 	{
 		$this->filesystem = new Filesystem();
 
@@ -21,7 +24,7 @@ abstract class FileTestCase extends Unit
 		$this->filesystem->copy($this->origImageJpg, $this->imageJpg);
 	}
 
-	protected function _after()
+	protected function _after(): void
 	{
 		$this->filesystem->remove([__DIR__ . '/tmp', $this->imageJpg]);
 	}

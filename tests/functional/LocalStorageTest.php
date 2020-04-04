@@ -1,4 +1,6 @@
-<?php namespace Project\Tests;
+<?php declare(strict_types = 1);
+
+namespace Project\Tests;
 
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
@@ -19,7 +21,7 @@ class LocalStorageTest extends FileTestCase
 
 	private LocalStorage $storage;
 
-	protected function _before()
+	protected function _before(): void
 	{
 		parent::_before();
 
@@ -34,7 +36,7 @@ class LocalStorageTest extends FileTestCase
 		$this->storage = new LocalStorage($adapter);
 	}
 
-	public function testPersist()
+	public function testPersist(): void
 	{
 		$image = new StorableImage(new LocalUploader($this->imageJpg), 'name.jpg');
 
@@ -45,7 +47,7 @@ class LocalStorageTest extends FileTestCase
 		$this->assertSame('name.jpg', $persistent->getId());
 	}
 
-	public function testPersistScope()
+	public function testPersistScope(): void
 	{
 		$image = new StorableImage(new LocalUploader($this->imageJpg), 'name.jpg', new Scope('namespace', 'scope'));
 
@@ -56,7 +58,7 @@ class LocalStorageTest extends FileTestCase
 		$this->assertSame('namespace/scope/name.jpg', $persistent->getId());
 	}
 
-	public function testRemove()
+	public function testRemove(): void
 	{
 		$image = new StorableImage(new LocalUploader($this->imageJpg), 'name.jpg');
 
@@ -68,7 +70,7 @@ class LocalStorageTest extends FileTestCase
 		$this->assertTempFileNotExists('media/name.jpg');
 	}
 
-	public function testRemoveScope()
+	public function testRemoveScope(): void
 	{
 		$image = new StorableImage(new LocalUploader($this->imageJpg), 'name.jpg', new Scope('namespace', 'scope'));
 
@@ -80,7 +82,7 @@ class LocalStorageTest extends FileTestCase
 		$this->assertTempFileNotExists('media/name.jpg');
 	}
 
-	public function testUrl()
+	public function testUrl(): void
 	{
 		$image = new StorableImage(new LocalUploader($this->imageJpg), 'name.jpg');
 
@@ -89,7 +91,7 @@ class LocalStorageTest extends FileTestCase
 		$this->assertSame('http://localhost/media/name.jpg', $this->storage->toUrl($persistent));
 	}
 
-	public function testFiltersWithNewUpload()
+	public function testFiltersWithNewUpload(): void
 	{
 		$image = new StorableImage(new LocalUploader($this->imageJpg), 'name.jpg');
 		$image = $image->withFilter('thumbnail');
@@ -102,7 +104,7 @@ class LocalStorageTest extends FileTestCase
 		$this->assertSame(15, $size[1]);
 	}
 
-	public function testFilterExistingImage()
+	public function testFilterExistingImage(): void
 	{
 		$image = new StorableImage(new LocalUploader($this->imageJpg), 'name.jpg');
 		$persistent = $this->storage->persist($image);
@@ -116,7 +118,7 @@ class LocalStorageTest extends FileTestCase
 		$this->assertSame(15, $size[1]);
 	}
 
-	public function testToUrlWithFilter()
+	public function testToUrlWithFilter(): void
 	{
 		$image = new StorableImage(new LocalUploader($this->imageJpg), 'name.jpg');
 		$persistent = $this->storage->persist($image);
@@ -131,7 +133,7 @@ class LocalStorageTest extends FileTestCase
 		$this->assertSame(15, $size[1]);
 	}
 
-	public function testToUrlWithFilterAndImageNotExists()
+	public function testToUrlWithFilterAndImageNotExists(): void
 	{
 		$persistent = new PersistentImage('image.jpg');
 
@@ -140,7 +142,7 @@ class LocalStorageTest extends FileTestCase
 		$this->assertNull($link);
 	}
 
-	public function testToUrlAndImageNotExists()
+	public function testToUrlAndImageNotExists(): void
 	{
 		$persistent = new PersistentImage('image.jpg');
 

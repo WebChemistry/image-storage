@@ -1,15 +1,20 @@
-<?php namespace Project\Tests;
+<?php declare(strict_types = 1);
 
+namespace Project\Tests;
+
+use Codeception\Test\Unit;
 use WebChemistry\ImageStorage\Entity\Image;
 use WebChemistry\ImageStorage\Exceptions\ClosedImageException;
 use WebChemistry\ImageStorage\Scope\Scope;
 
-class ImageTest extends \Codeception\Test\Unit
+class ImageTest extends Unit
 {
 
-	public function testImage()
+	public function testImage(): void
 	{
-		$image = new class ('foo.jpg', $scope = new Scope('bar')) extends Image {};
+		$image = new class ('foo.jpg', $scope = new Scope('bar')) extends Image {
+
+		};
 
 		$this->assertSame('foo.jpg', $image->getName());
 		$this->assertSame('bar/foo.jpg', $image->getId());
@@ -18,7 +23,7 @@ class ImageTest extends \Codeception\Test\Unit
 		$this->assertSame('bar', $new->getFilter()->getName());
 	}
 
-	public function testClose()
+	public function testClose(): void
 	{
 		$image = new class('foo.jpg') extends Image {
 
