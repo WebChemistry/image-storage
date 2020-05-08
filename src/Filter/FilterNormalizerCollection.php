@@ -3,19 +3,17 @@
 namespace WebChemistry\ImageStorage\Filter;
 
 use WebChemistry\ImageStorage\Entity\ImageInterface;
+use WebChemistry\ImageStorage\Exceptions\FilterNormalizerNotFoundException;
 
 final class FilterNormalizerCollection implements FilterNormalizerCollectionInterface
 {
 
 	/** @var FilterNormalizerInterface[] */
-	private array $normalizers;
+	private array $normalizers = [];
 
-	/**
-	 * @param FilterNormalizerInterface[] $normalizers
-	 */
-	public function __construct(array $normalizers = [])
+	public function add(FilterNormalizerInterface $normalizer): void
 	{
-		$this->normalizers = $normalizers;
+		$this->normalizers[] = $normalizer;
 	}
 
 	/**
@@ -29,12 +27,14 @@ final class FilterNormalizerCollection implements FilterNormalizerCollectionInte
 		}
 
 		foreach ($this->normalizers as $normalizer) {
-			if ($normalizer->supports($filter)) {
-				return $normalizer->normalize($filter);
+			if ($normalizer->supports($filter, $image)) {
+				return $normalizer->normalize($filter, $image);
 			}
 		}
 
-		return null;
+		throw new FilterNormalizerNotFoundException(
+			sprintf('Filter normalizer not found for filter %s and image %s', $filter->getName(), $image->getId())
+		);
 	}
 
 }
