@@ -4,7 +4,7 @@ namespace WebChemistry\ImageStorage\File;
 
 use WebChemistry\ImageStorage\Entity\ImageInterface;
 use WebChemistry\ImageStorage\Filesystem\FilesystemInterface;
-use WebChemistry\ImageStorage\PathInfo\Factory\PathInfoFactoryInterface;
+use WebChemistry\ImageStorage\PathInfo\PathInfoFactoryInterface;
 
 final class FileFactory implements FileFactoryInterface
 {

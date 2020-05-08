@@ -1,9 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace WebChemistry\ImageStorage\PathInfo\Factory;
+namespace WebChemistry\ImageStorage\PathInfo;
 
 use WebChemistry\ImageStorage\Entity\ImageInterface;
-use WebChemistry\ImageStorage\PathInfo\PathInfoInterface;
 
 interface PathInfoFactoryInterface
 {

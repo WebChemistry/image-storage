@@ -8,7 +8,7 @@ use WebChemistry\ImageStorage\Entity\StorableImage;
 use WebChemistry\ImageStorage\File\FileFactory;
 use WebChemistry\ImageStorage\Filesystem\LocalFilesystem;
 use WebChemistry\ImageStorage\LinkGenerator\LinkGenerator;
-use WebChemistry\ImageStorage\PathInfo\Factory\PathInfoFactory;
+use WebChemistry\ImageStorage\PathInfo\PathInfoFactory;
 use WebChemistry\ImageStorage\Resolver\FileNameResolvers\OriginalFileNameResolverInterface;
 use WebChemistry\ImageStorage\Scope\Scope;
 use WebChemistry\ImageStorage\Storage\ImageStorage;
