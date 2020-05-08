@@ -5,6 +5,7 @@ namespace WebChemistry\ImageStorage\Doctrine\Annotation;
 use Doctrine\Common\Annotations\Reader;
 use ReflectionClass;
 use ReflectionProperty;
+use WebChemistry\ImageStorage\Doctrine\Annotation\Scope as ScopeAnnotation;
 use WebChemistry\ImageStorage\Entity\ImageInterface;
 use WebChemistry\ImageStorage\Scope\Scope;
 
@@ -46,8 +47,8 @@ class AnnotationScopeProvider
 	 */
 	protected function getScopes(ReflectionProperty $property): ?array
 	{
-		/** @var Scope|null $annotation */
-		$annotation = $this->reader->getPropertyAnnotation($property, Scope::class);
+		/** @var ScopeAnnotation|null $annotation */
+		$annotation = $this->reader->getPropertyAnnotation($property, ScopeAnnotation::class);
 		if (!$annotation) {
 			return null;
 		}
