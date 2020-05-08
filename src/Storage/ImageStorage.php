@@ -54,7 +54,6 @@ class ImageStorage implements ImageStorageInterface
 			}
 
 			$content = $this->filterProcessor->process(
-				$filter,
 				$this->createFile($image),
 				$this->createFile($image->getOriginal())
 			);

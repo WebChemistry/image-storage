@@ -2,7 +2,7 @@
 
 namespace WebChemistry\ImageStorage\Testing\Filter;
 
-use WebChemistry\ImageStorage\Filter\Filter;
+use WebChemistry\ImageStorage\Filter\FilterInterface;
 use WebChemistry\ImageStorage\Scope\Scope;
 
 interface OperationRegistryInterface
@@ -10,6 +10,6 @@ interface OperationRegistryInterface
 
 	public function add(OperationInterface $operation): void;
 
-	public function get(Filter $filter, Scope $scope): ?OperationInterface;
+	public function get(FilterInterface $filter, Scope $scope): ?OperationInterface;
 
 }

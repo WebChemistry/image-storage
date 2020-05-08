@@ -3,14 +3,14 @@
 namespace WebChemistry\ImageStorage\Testing\Filter;
 
 use Nette\Utils\Image;
-use WebChemistry\ImageStorage\Filter\Filter;
+use WebChemistry\ImageStorage\Filter\FilterInterface;
 use WebChemistry\ImageStorage\Scope\Scope;
 
 interface OperationInterface
 {
 
-	public function supports(Filter $filter, Scope $scope): bool;
+	public function supports(FilterInterface $filter, Scope $scope): bool;
 
-	public function operate(Image $image, Filter $filter): void;
+	public function operate(Image $image, FilterInterface $filter): void;
 
 }

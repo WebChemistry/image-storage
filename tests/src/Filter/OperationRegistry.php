@@ -2,7 +2,7 @@
 
 namespace WebChemistry\ImageStorage\Testing\Filter;
 
-use WebChemistry\ImageStorage\Filter\Filter;
+use WebChemistry\ImageStorage\Filter\FilterInterface;
 use WebChemistry\ImageStorage\Scope\Scope;
 
 final class OperationRegistry implements OperationRegistryInterface
@@ -16,7 +16,7 @@ final class OperationRegistry implements OperationRegistryInterface
 		$this->operations[] = $operation;
 	}
 
-	public function get(Filter $filter, Scope $scope): ?OperationInterface
+	public function get(FilterInterface $filter, Scope $scope): ?OperationInterface
 	{
 		foreach ($this->operations as $operation) {
 			if ($operation->supports($filter, $scope)) {

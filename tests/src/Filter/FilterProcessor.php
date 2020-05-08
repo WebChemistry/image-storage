@@ -2,11 +2,10 @@
 
 namespace WebChemistry\ImageStorage\Testing\Filter;
 
+use LogicException;
 use Nette\Utils\Image;
 use WebChemistry\ImageStorage\File\FileInterface;
-use WebChemistry\ImageStorage\Filter\FilterInterface;
 use WebChemistry\ImageStorage\Filter\FilterProcessorInterface;
-use WebChemistry\ImageStorage\ImagineFilters\Exceptions\OperationNotFoundException;
 
 final class FilterProcessor implements FilterProcessorInterface
 {
@@ -21,17 +20,17 @@ final class FilterProcessor implements FilterProcessorInterface
 	/**
 	 * @param mixed[] $options
 	 */
-	public function process(
-		FilterInterface $filter,
-		FileInterface $file,
-		FileInterface $original,
-		array $options = []
-	): string
+	public function process(FileInterface $file, FileInterface $original, array $options = []): string
 	{
+		$filter = $file->getImage()->getFilter();
+		if (!$filter) {
+			throw new LogicException('Filter not found');
+		}
+
 		$operation = $this->operationRegistry->get($filter, $file->getImage()->getScope());
 
 		if (!$operation) {
-			throw new OperationNotFoundException(sprintf('Operation not found for %s', $file->getImage()->getId()));
+			throw new LogicException(sprintf('Operation not found for %s', $file->getImage()->getId()));
 		}
 
 		$operation->operate($image = Image::fromString($original->getContent(), $format), $filter);
