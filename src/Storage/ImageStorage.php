@@ -7,7 +7,7 @@ use WebChemistry\ImageStorage\Entity\PersistentImage;
 use WebChemistry\ImageStorage\Entity\PersistentImageInterface;
 use WebChemistry\ImageStorage\Entity\StorableImageInterface;
 use WebChemistry\ImageStorage\Exceptions\InvalidArgumentException;
-use WebChemistry\ImageStorage\File\FileFactory;
+use WebChemistry\ImageStorage\File\FileFactoryInterface;
 use WebChemistry\ImageStorage\File\FileInterface;
 use WebChemistry\ImageStorage\File\FileProviderInterface;
 use WebChemistry\ImageStorage\Filter\FilterProcessorInterface;
@@ -18,14 +18,14 @@ use WebChemistry\ImageStorage\Resolver\FileNameResolverInterface;
 class ImageStorage implements ImageStorageInterface
 {
 
-	private FileFactory $fileFactory;
+	private FileFactoryInterface $fileFactory;
 
 	private FileNameResolverInterface $fileNameResolver;
 
 	private FilterProcessorInterface $filterProcessor;
 
 	public function __construct(
-		FileFactory $fileFactory,
+		FileFactoryInterface $fileFactory,
 		FileNameResolverInterface $fileNameResolver,
 		?FilterProcessorInterface $filterProcessor = null
 	)
