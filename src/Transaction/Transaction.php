@@ -9,12 +9,13 @@ use WebChemistry\ImageStorage\Exceptions\NotSupportedException;
 use WebChemistry\ImageStorage\Exceptions\RollbackFailedException;
 use WebChemistry\ImageStorage\Exceptions\TransactionException;
 use WebChemistry\ImageStorage\ImageStorageInterface;
-use WebChemistry\ImageStorage\UnitOfWork;
+use WebChemistry\ImageStorage\Transaction\Entity\PromisedImage;
 
-final class Transaction implements TransactionInterface, UnitOfWork
+final class Transaction implements TransactionInterface, ImageStorageInterface
 {
 
 	private ImageStorageInterface $imageStorage;
+
 	private bool $commited = false;
 
 	/** @var PromisedImage[] */
@@ -30,6 +31,7 @@ final class Transaction implements TransactionInterface, UnitOfWork
 		if ($this->commited) {
 			throw new TransactionException('Transaction is already commited');
 		}
+
 		$this->commited = true;
 
 		$process = [];
@@ -40,12 +42,17 @@ final class Transaction implements TransactionInterface, UnitOfWork
 				$this->rollback();
 				throw new TransactionException('Transaction failed', 0, $e);
 			}
+
 			$process[] = [$persited, $image];
 		}
 
 		try {
+			/**
+			 * @var PromisedImage $persisted
+			 * @var PromisedImage $image
+			 */
 			foreach ($process as [$persisted, $image]) {
-				$persited->_commited($image);
+				$persisted->_commited($image);
 			}
 		} catch (Throwable $e) {
 			$this->rollback();
@@ -69,7 +76,7 @@ final class Transaction implements TransactionInterface, UnitOfWork
 				}
 			}
 		}
-		
+
 		if ($exception) {
 			throw new RollbackFailedException('Rollback failed', 0, $exception);
 		}

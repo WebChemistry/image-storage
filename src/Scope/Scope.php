@@ -23,9 +23,11 @@ class Scope
 		if (!$scope) {
 			throw new InvalidArgumentException(sprintf('Scope must not be empty'));
 		}
+
 		if (!ctype_alnum(str_replace(['_', '-'], '', $scope))) {
 			throw new InvalidArgumentException(sprintf('Scope "%s" contains invalid chars', $scope));
 		}
+
 		if ($scope[0] === '_') {
 			throw new InvalidArgumentException(sprintf('Scope "%s" must not start with _', $scope));
 		}
@@ -62,12 +64,7 @@ class Scope
 	 */
 	public static function fromString(string $scope)
 	{
-		$explode = explode('/', $scope);
-		if ($explode === false) {
-			return new static($scope);
-		}
-
-		return new static(...$explode);
+		return new static(...explode('/', $scope));
 	}
 
 	public function toStringWithTrailingSlash(): string

@@ -2,13 +2,13 @@
 
 namespace WebChemistry\ImageStorage\Resolver\FilterResolvers;
 
-use WebChemistry\ImageStorage\Filter\Filter;
+use WebChemistry\ImageStorage\Filter\FilterInterface;
 use WebChemistry\ImageStorage\Resolver\FilterResolverInterface;
 
 final class OriginalFilterResolver implements FilterResolverInterface
 {
 
-	public function name(Filter $filter): string
+	public function resolve(FilterInterface $filter): string
 	{
 		return '_' . $filter->getName();
 	}

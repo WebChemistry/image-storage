@@ -2,38 +2,41 @@
 
 namespace Project\Tests;
 
-use League\Flysystem\Adapter\Local;
-use League\Flysystem\Filesystem;
-use WebChemistry\ImageStorage\Adapter\SimpleAdapter;
 use WebChemistry\ImageStorage\Entity\PersistentImage;
 use WebChemistry\ImageStorage\Entity\PersistentImageInterface;
 use WebChemistry\ImageStorage\Entity\StorableImage;
-use WebChemistry\ImageStorage\ImagineFilters\FilterLoader;
-use WebChemistry\ImageStorage\ImagineFilters\FilterProcessor;
+use WebChemistry\ImageStorage\File\FileFactory;
+use WebChemistry\ImageStorage\Filesystem\LocalFilesystem;
+use WebChemistry\ImageStorage\LinkGenerator\LinkGenerator;
+use WebChemistry\ImageStorage\PathInfo\Factory\PathInfoFactory;
+use WebChemistry\ImageStorage\Resolver\FileNameResolvers\OriginalFileNameResolver;
 use WebChemistry\ImageStorage\Scope\Scope;
-use WebChemistry\ImageStorage\Storages\LocalStorage;
+use WebChemistry\ImageStorage\Storage\ImageStorage;
 use WebChemistry\ImageStorage\Testing\FileTestCase;
-use WebChemistry\ImageStorage\Testing\Filter\ThumbnailFilter;
+use WebChemistry\ImageStorage\Testing\Filter\FilterProcessor;
+use WebChemistry\ImageStorage\Testing\Filter\OperationRegistry;
+use WebChemistry\ImageStorage\Testing\Filter\ThumbnailOperation;
 use WebChemistry\ImageStorage\Uploader\LocalUploader;
 
 class LocalStorageTest extends FileTestCase
 {
 
-	private LocalStorage $storage;
+	private ImageStorage $storage;
+
+	private LinkGenerator $linkGenerator;
 
 	protected function _before(): void
 	{
 		parent::_before();
 
-		$loader = new FilterLoader();
-		$loader->addFilter(new ThumbnailFilter());
-		$processor = new FilterProcessor($loader);
+		$registry = new OperationRegistry();
+		$registry->add(new ThumbnailOperation());
 
-		$local = new Local($this->getAbsolutePath());
-		$filesystem = new Filesystem($local);
-		$adapter = new SimpleAdapter('http://localhost', $filesystem, null, null, $processor);
+		$processor = new FilterProcessor($registry);
+		$fileFactory = new FileFactory(new LocalFilesystem($this->getAbsolutePath()), new PathInfoFactory());
 
-		$this->storage = new LocalStorage($adapter);
+		$this->storage = new ImageStorage($fileFactory, new OriginalFileNameResolver(), $processor);
+		$this->linkGenerator = new LinkGenerator($this->storage, $fileFactory);
 	}
 
 	public function testPersist(): void
@@ -88,7 +91,7 @@ class LocalStorageTest extends FileTestCase
 
 		$persistent = $this->storage->persist($image);
 
-		$this->assertSame('http://localhost/media/name.jpg', $this->storage->toUrl($persistent));
+		$this->assertSame('media/name.jpg', $this->linkGenerator->link($persistent));
 	}
 
 	public function testFiltersWithNewUpload(): void
@@ -123,9 +126,9 @@ class LocalStorageTest extends FileTestCase
 		$image = new StorableImage(new LocalUploader($this->imageJpg), 'name.jpg');
 		$persistent = $this->storage->persist($image);
 
-		$link = $this->storage->toUrl($persistent->withFilter('thumbnail'));
+		$link = $this->linkGenerator->link($persistent->withFilter('thumbnail'));
 
-		$this->assertSame('http://localhost/cache/_thumbnail/name.jpg', $link);
+		$this->assertSame('cache/_thumbnail/name.jpg', $link);
 		$this->assertTempFileExists('media/name.jpg');
 		$this->assertTempFileExists('cache/_thumbnail/name.jpg');
 		$size = getimagesize($this->getAbsolutePath('cache/_thumbnail/name.jpg'));
@@ -137,7 +140,7 @@ class LocalStorageTest extends FileTestCase
 	{
 		$persistent = new PersistentImage('image.jpg');
 
-		$link = $this->storage->toUrl($persistent->withFilter('thumbnail'));
+		$link = $this->linkGenerator->link($persistent->withFilter('thumbnail'));
 
 		$this->assertNull($link);
 	}
@@ -146,7 +149,7 @@ class LocalStorageTest extends FileTestCase
 	{
 		$persistent = new PersistentImage('image.jpg');
 
-		$link = $this->storage->toUrl($persistent);
+		$link = $this->linkGenerator->link($persistent);
 
 		$this->assertNull($link);
 	}

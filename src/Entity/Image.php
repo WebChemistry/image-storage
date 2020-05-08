@@ -4,14 +4,18 @@ namespace WebChemistry\ImageStorage\Entity;
 
 use WebChemistry\ImageStorage\Exceptions\ClosedImageException;
 use WebChemistry\ImageStorage\Filter\Filter;
+use WebChemistry\ImageStorage\Filter\FilterInterface;
 use WebChemistry\ImageStorage\Scope\Scope;
 
 abstract class Image implements ImageInterface
 {
 
 	protected string $name;
-	protected ?Filter $filter = null;
+
+	protected ?FilterInterface $filter = null;
+
 	protected Scope $scope;
+
 	private bool $closed = false;
 
 	public function __construct(string $name, ?Scope $scope = null)
@@ -41,7 +45,7 @@ abstract class Image implements ImageInterface
 		return $this->scope;
 	}
 
-	public function getFilter(): ?Filter
+	public function getFilter(): ?FilterInterface
 	{
 		$this->throwIfClosed();
 
@@ -98,7 +102,7 @@ abstract class Image implements ImageInterface
 	/**
 	 * @return static
 	 */
-	public function withFilterObject(Filter $filter)
+	public function withFilterObject(FilterInterface $filter)
 	{
 		$this->throwIfClosed();
 
@@ -133,7 +137,7 @@ abstract class Image implements ImageInterface
 	{
 		if ($this->closed) {
 			throw new ClosedImageException(
-				sprintf('Image %s is closed', $this->getId())
+				sprintf('Image %s is closed', $this->scope->toStringWithTrailingSlash() . $this->name)
 			);
 		}
 	}

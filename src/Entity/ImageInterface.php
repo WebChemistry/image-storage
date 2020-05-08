@@ -2,7 +2,7 @@
 
 namespace WebChemistry\ImageStorage\Entity;
 
-use WebChemistry\ImageStorage\Filter\Filter;
+use WebChemistry\ImageStorage\Filter\FilterInterface;
 use WebChemistry\ImageStorage\Scope\Scope;
 
 interface ImageInterface
@@ -14,7 +14,7 @@ interface ImageInterface
 
 	public function getScope(): Scope;
 
-	public function getFilter(): ?Filter;
+	public function getFilter(): ?FilterInterface;
 
 	public function hasFilter(): bool;
 
@@ -42,6 +42,6 @@ interface ImageInterface
 	/**
 	 * @return static
 	 */
-	public function withFilterObject(Filter $filter);
+	public function withFilterObject(FilterInterface $filter);
 
 }

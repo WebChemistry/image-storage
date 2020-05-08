@@ -1,18 +1,19 @@
 <?php declare(strict_types = 1);
 
-namespace WebChemistry\ImageStorage\Transaction;
+namespace WebChemistry\ImageStorage\Transaction\Entity;
 
 use WebChemistry\ImageStorage\Entity\ImageInterface;
 use WebChemistry\ImageStorage\Entity\PersistentImage;
 use WebChemistry\ImageStorage\Entity\PersistentImageInterface;
-use WebChemistry\ImageStorage\Exceptions\ClosedImageException;
 use WebChemistry\ImageStorage\Exceptions\ImageAlreadyCommitedException;
 use WebChemistry\ImageStorage\Exceptions\ImageIsNotCommitedException;
+use WebChemistry\ImageStorage\Filter\FilterInterface;
 
 class PromisedImage extends PersistentImage implements PersistentImageInterface
 {
 
 	private bool $commited = false;
+
 	private ImageInterface $image;
 
 	/** @var callable[] */
@@ -36,11 +37,11 @@ class PromisedImage extends PersistentImage implements PersistentImageInterface
 
 		return parent::getName();
 	}
-	
-	public function getFilter(): ?Filter
+
+	public function getFilter(): ?FilterInterface
 	{
 		$this->throwIfNotCommited();
-		
+
 		return parent::getFilter();
 	}
 
@@ -59,7 +60,8 @@ class PromisedImage extends PersistentImage implements PersistentImageInterface
 		if ($this->commited) {
 			throw new ImageAlreadyCommitedException('Image is already commited');
 		}
- 		$this->commited = true;
+
+		$this->commited = true;
 
 		$this->name = $image->getName();
 		$this->scope = $image->getScope();

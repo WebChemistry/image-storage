@@ -16,7 +16,8 @@
         "codeception/module-phpbrowser": "^1.0.0",
 		"ramsey/uuid": "^4.0",
 		"doctrine/dbal": "^2.10",
-		"webchemistry/image-storage-imagine-filters": "^0.9.0"
+		"symfony/serializer": "^5.0",
+		"doctrine/annotations": "^1.10"
     },
     "autoload": {
 		"psr-4": {

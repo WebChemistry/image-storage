@@ -2,9 +2,6 @@
 
 namespace WebChemistry\ImageStorage\Uploader;
 
-use WebChemistry\ImageStorage\Exceptions\CannotSaveFileException;
-use WebChemistry\ImageStorage\Uploader\UploaderInterface;
-
 class StringUploader implements UploaderInterface
 {
 

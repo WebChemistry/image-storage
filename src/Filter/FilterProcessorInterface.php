@@ -2,12 +2,19 @@
 
 namespace WebChemistry\ImageStorage\Filter;
 
-use WebChemistry\ImageStorage\Entity\ImageInterface;
-use WebChemistry\ImageStorage\Metadata\ImageMetadataInterface;
+use WebChemistry\ImageStorage\File\FileInterface;
 
 interface FilterProcessorInterface
 {
 
-	public function process(ImageMetadataInterface $metadata, array $options = []): string;
+	/**
+	 * @param mixed[] $options
+	 */
+	public function process(
+		FilterInterface $filter,
+		FileInterface $file,
+		FileInterface $original,
+		array $options = []
+	): string;
 
 }

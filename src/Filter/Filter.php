@@ -2,11 +2,12 @@
 
 namespace WebChemistry\ImageStorage\Filter;
 
-final class Filter
+final class Filter implements FilterInterface
 {
 
 	/** @var mixed[] */
 	private array $options;
+
 	private string $name;
 
 	/**

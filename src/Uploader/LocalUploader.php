@@ -21,7 +21,7 @@ class LocalUploader implements UploaderInterface
 
 	public function getContent(): string
 	{
-		if (($content =@file_get_contents($this->filePath)) === false) {
+		if (($content = @file_get_contents($this->filePath)) === false) {
 			throw new CannotSaveFileException(sprintf('Cannot save "%s"', $this->filePath));
 		}
 

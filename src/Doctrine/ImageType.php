@@ -11,6 +11,9 @@ use WebChemistry\ImageStorage\Entity\PersistentImage;
 class ImageType extends StringType
 {
 
+	/**
+	 * @inheritDoc
+	 */
 	public function convertToDatabaseValue($value, AbstractPlatform $platform)
 	{
 		if ($value instanceof ImageInterface) {
@@ -26,7 +29,10 @@ class ImageType extends StringType
 		);
 	}
 
-	public function convertToPHPValue($value, AbstractPlatform $platform)
+	/**
+	 * @inheritDoc
+	 */
+	public function convertToPHPValue($value, AbstractPlatform $platform) // phpcs:ignore Generic.NamingConventions.CamelCapsFunctionName.ScopeNotCamelCaps
 	{
 		if ($value === null) {
 			return $value;
@@ -35,6 +41,9 @@ class ImageType extends StringType
 		return new PersistentImage((string) $value);
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public function getName()
 	{
 		return 'image';

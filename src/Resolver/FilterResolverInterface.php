@@ -2,11 +2,11 @@
 
 namespace WebChemistry\ImageStorage\Resolver;
 
-use WebChemistry\ImageStorage\Filter\Filter;
+use WebChemistry\ImageStorage\Filter\FilterInterface;
 
 interface FilterResolverInterface
 {
 
-	public function name(Filter $filter): string;
+	public function resolve(FilterInterface $filter): string;
 
 }

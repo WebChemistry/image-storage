@@ -2,9 +2,9 @@
 
 namespace WebChemistry\ImageStorage\Exceptions;
 
-use LogicException;
+use Exception;
 
-class ImageIsNotCommitedException extends LogicException
+class FileException extends Exception
 {
 
 }
