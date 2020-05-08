@@ -11,7 +11,9 @@ final class UuidFileNameResolver implements FileNameResolverInterface
 
 	public function resolve(FileInterface $file): string
 	{
-		return Uuid::uuid4()->toString();
+		$suffix = $file->getImage()->getSuffix();
+
+		return Uuid::uuid4()->toString() . ($suffix ? '.' . $suffix : '');
 	}
 
 }
