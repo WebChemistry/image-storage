@@ -2,25 +2,20 @@
 
 namespace WebChemistry\ImageStorage\Filesystem;
 
-use finfo;
-use League\Flysystem\Adapter\Local;
 use League\Flysystem\FileNotFoundException;
-use League\Flysystem\Filesystem;
+use League\Flysystem\FilesystemInterface as LeagueFilesystemInterface;
 use WebChemistry\ImageStorage\Exceptions\FileException;
+use WebChemistry\ImageStorage\Filesystem\League\LeagueFilesystemFactoryInterface;
 use WebChemistry\ImageStorage\PathInfo\PathInfoInterface;
 
 final class LocalFilesystem implements FilesystemInterface
 {
 
-	/** @var Filesystem */
-	private Filesystem $bridge;
+	private LeagueFilesystemInterface $bridge;
 
-	private string $baseDir;
-
-	public function __construct(string $baseDir)
+	public function __construct(LeagueFilesystemFactoryInterface $leagueFilesystemFactory)
 	{
-		$this->bridge = new Filesystem(new Local($baseDir));
-		$this->baseDir = rtrim($baseDir, '/');
+		$this->bridge = $leagueFilesystemFactory->create();
 	}
 
 	/**
@@ -80,18 +75,9 @@ final class LocalFilesystem implements FilesystemInterface
 	 */
 	public function mimeType(PathInfoInterface $path): ?string
 	{
-		$finfo = new finfo(FILEINFO_MIME_TYPE);
-		$mimeType = $finfo->file($this->absolutePath($path));
+		$mimeType = $this->bridge->getMimetype($path->toString());
 
 		return $mimeType === false ? null : $mimeType;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function absolutePath(PathInfoInterface $path): string
-	{
-		return $this->baseDir . '/' . ltrim($path->toString(), '/');
 	}
 
 }

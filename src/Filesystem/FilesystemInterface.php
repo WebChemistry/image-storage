@@ -30,6 +30,4 @@ interface FilesystemInterface
 
 	public function mimeType(PathInfoInterface $path): ?string;
 
-	public function absolutePath(PathInfoInterface $path): string;
-
 }
