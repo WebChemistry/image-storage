@@ -9,7 +9,7 @@ use WebChemistry\ImageStorage\File\FileFactory;
 use WebChemistry\ImageStorage\Filesystem\LocalFilesystem;
 use WebChemistry\ImageStorage\LinkGenerator\LinkGenerator;
 use WebChemistry\ImageStorage\PathInfo\PathInfoFactory;
-use WebChemistry\ImageStorage\Resolver\FileNameResolvers\OriginalFileNameResolverInterface;
+use WebChemistry\ImageStorage\Resolver\FileNameResolvers\OriginalFileNameResolver;
 use WebChemistry\ImageStorage\Scope\Scope;
 use WebChemistry\ImageStorage\Storage\ImageStorage;
 use WebChemistry\ImageStorage\Testing\FileTestCase;
@@ -35,7 +35,7 @@ class LocalStorageTest extends FileTestCase
 		$processor = new FilterProcessor($registry);
 		$fileFactory = new FileFactory(new LocalFilesystem($this->getAbsolutePath()), new PathInfoFactory());
 
-		$this->storage = new ImageStorage($fileFactory, new OriginalFileNameResolverInterface(), $processor);
+		$this->storage = new ImageStorage($fileFactory, new OriginalFileNameResolver(), $processor);
 		$this->linkGenerator = new LinkGenerator($this->storage, $fileFactory);
 	}
 

@@ -7,7 +7,7 @@ use WebChemistry\ImageStorage\File\FileFactoryInterface;
 use WebChemistry\ImageStorage\File\FileInterface;
 use WebChemistry\ImageStorage\Resolver\FileNameResolverInterface;
 
-final class PrefixFileNameResolverInterface implements FileNameResolverInterface
+final class PrefixFileNameResolver implements FileNameResolverInterface
 {
 
 	private FileFactoryInterface $fileFactory;
