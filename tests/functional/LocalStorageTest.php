@@ -16,7 +16,7 @@ use WebChemistry\ImageStorage\Testing\FileTestCase;
 use WebChemistry\ImageStorage\Testing\Filter\FilterProcessor;
 use WebChemistry\ImageStorage\Testing\Filter\OperationRegistry;
 use WebChemistry\ImageStorage\Testing\Filter\ThumbnailOperation;
-use WebChemistry\ImageStorage\Uploader\LocalUploader;
+use WebChemistry\ImageStorage\Uploader\FilePathUploader;
 
 class LocalStorageTest extends FileTestCase
 {
@@ -41,7 +41,7 @@ class LocalStorageTest extends FileTestCase
 
 	public function testPersist(): void
 	{
-		$image = new StorableImage(new LocalUploader($this->imageJpg), 'name.jpg');
+		$image = new StorableImage(new FilePathUploader($this->imageJpg), 'name.jpg');
 
 		$persistent = $this->storage->persist($image);
 
@@ -52,7 +52,7 @@ class LocalStorageTest extends FileTestCase
 
 	public function testPersistScope(): void
 	{
-		$image = new StorableImage(new LocalUploader($this->imageJpg), 'name.jpg', new Scope('namespace', 'scope'));
+		$image = new StorableImage(new FilePathUploader($this->imageJpg), 'name.jpg', new Scope('namespace', 'scope'));
 
 		$persistent = $this->storage->persist($image);
 
@@ -63,7 +63,7 @@ class LocalStorageTest extends FileTestCase
 
 	public function testRemove(): void
 	{
-		$image = new StorableImage(new LocalUploader($this->imageJpg), 'name.jpg');
+		$image = new StorableImage(new FilePathUploader($this->imageJpg), 'name.jpg');
 
 		$persistent = $this->storage->persist($image);
 
@@ -75,7 +75,7 @@ class LocalStorageTest extends FileTestCase
 
 	public function testRemoveScope(): void
 	{
-		$image = new StorableImage(new LocalUploader($this->imageJpg), 'name.jpg', new Scope('namespace', 'scope'));
+		$image = new StorableImage(new FilePathUploader($this->imageJpg), 'name.jpg', new Scope('namespace', 'scope'));
 
 		$persistent = $this->storage->persist($image);
 
@@ -87,7 +87,7 @@ class LocalStorageTest extends FileTestCase
 
 	public function testUrl(): void
 	{
-		$image = new StorableImage(new LocalUploader($this->imageJpg), 'name.jpg');
+		$image = new StorableImage(new FilePathUploader($this->imageJpg), 'name.jpg');
 
 		$persistent = $this->storage->persist($image);
 
@@ -96,7 +96,7 @@ class LocalStorageTest extends FileTestCase
 
 	public function testFiltersWithNewUpload(): void
 	{
-		$image = new StorableImage(new LocalUploader($this->imageJpg), 'name.jpg');
+		$image = new StorableImage(new FilePathUploader($this->imageJpg), 'name.jpg');
 		$image = $image->withFilter('thumbnail');
 
 		$persistent = $this->storage->persist($image);
@@ -109,7 +109,7 @@ class LocalStorageTest extends FileTestCase
 
 	public function testFilterExistingImage(): void
 	{
-		$image = new StorableImage(new LocalUploader($this->imageJpg), 'name.jpg');
+		$image = new StorableImage(new FilePathUploader($this->imageJpg), 'name.jpg');
 		$persistent = $this->storage->persist($image);
 
 		$this->storage->persist($persistent->withFilter('thumbnail'));
@@ -123,7 +123,7 @@ class LocalStorageTest extends FileTestCase
 
 	public function testToUrlWithFilter(): void
 	{
-		$image = new StorableImage(new LocalUploader($this->imageJpg), 'name.jpg');
+		$image = new StorableImage(new FilePathUploader($this->imageJpg), 'name.jpg');
 		$persistent = $this->storage->persist($image);
 
 		$link = $this->linkGenerator->link($persistent->withFilter('thumbnail'));

@@ -5,7 +5,7 @@ namespace WebChemistry\ImageStorage\Uploader;
 use WebChemistry\ImageStorage\Exceptions\CannotSaveFileException;
 use WebChemistry\ImageStorage\Exceptions\InvalidArgumentException;
 
-class LocalUploader implements UploaderInterface
+class FilePathUploader implements UploaderInterface
 {
 
 	private string $filePath;
