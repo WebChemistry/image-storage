@@ -24,7 +24,7 @@ final class FilterProcessor implements FilterProcessorInterface
 	{
 		$filter = $file->getImage()->getFilter();
 		if (!$filter) {
-			throw new LogicException('Filter not found');
+			return $file->getContent();
 		}
 
 		$operation = $this->operationRegistry->get($filter, $file->getImage()->getScope());

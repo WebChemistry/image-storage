@@ -7,11 +7,11 @@ use WebChemistry\ImageStorage\Entity\PersistentImage;
 use WebChemistry\ImageStorage\Entity\PersistentImageInterface;
 use WebChemistry\ImageStorage\Entity\StorableImageInterface;
 use WebChemistry\ImageStorage\Exceptions\InvalidArgumentException;
-use WebChemistry\ImageStorage\Exceptions\NotSupportedException;
 use WebChemistry\ImageStorage\File\FileFactory;
 use WebChemistry\ImageStorage\File\FileInterface;
 use WebChemistry\ImageStorage\File\FileProviderInterface;
 use WebChemistry\ImageStorage\Filter\FilterProcessorInterface;
+use WebChemistry\ImageStorage\Filter\VoidFilterProcessor;
 use WebChemistry\ImageStorage\ImageStorageInterface;
 use WebChemistry\ImageStorage\Resolver\FileNameResolver;
 
@@ -22,7 +22,7 @@ class ImageStorage implements ImageStorageInterface
 
 	private FileNameResolver $fileNameResolver;
 
-	private ?FilterProcessorInterface $filterProcessor;
+	private FilterProcessorInterface $filterProcessor;
 
 	public function __construct(
 		FileFactory $fileFactory,
@@ -32,7 +32,7 @@ class ImageStorage implements ImageStorageInterface
 	{
 		$this->fileNameResolver = $fileNameResolver;
 		$this->fileFactory = $fileFactory;
-		$this->filterProcessor = $filterProcessor;
+		$this->filterProcessor = $filterProcessor ?? new VoidFilterProcessor();
 	}
 
 	protected function createFile(ImageInterface $image): FileInterface
@@ -46,31 +46,27 @@ class ImageStorage implements ImageStorageInterface
 
 	public function persist(ImageInterface $image): PersistentImageInterface
 	{
-		$original = $image;
+		$close = $image;
 
-		if ($filter = $image->getFilter()) {
-			if (!$this->filterProcessor) {
-				throw new NotSupportedException('Filter processor is not set');
-			}
+		$filter = $image->getFilter();
+		$file = $this->createFile($image);
 
-			$content = $this->filterProcessor->process(
-				$this->createFile($image),
-				$this->createFile($image->getOriginal())
-			);
-		} elseif ($image instanceof StorableImageInterface) {
-			$content = $image->getUploader()->getContent();
+		if ($image instanceof StorableImageInterface) {
+			$image = $image->withName($this->fileNameResolver->resolve($file));
 
-			$image = $image->withName($this->fileNameResolver->resolve($this->createFile($image)));
-		} else {
+			$file = $this->createFile($image);
+		} elseif ($image instanceof PersistentImageInterface && !$filter) {
 			throw new InvalidArgumentException('Cannot persist persistent image with no filter');
 		}
 
 		$this->createFile($image)
-			->setContent($content);
+			->setContent(
+				$this->filterProcessor->process($file, $this->createFile($image->getOriginal()))
+			);
 
-		$persistent = new PersistentImage($original->getId());
-		if ($original instanceof StorableImageInterface) {
-			$original->close();
+		$persistent = new PersistentImage($close->getId());
+		if ($close instanceof StorableImageInterface) {
+			$close->close();
 		} elseif ($filter) {
 			$persistent = $persistent->withFilterObject($filter);
 		}
