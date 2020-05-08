@@ -71,11 +71,6 @@ class File implements FileInterface
 		return $this->pathInfo->toString();
 	}
 
-	public function getAbsolutePath(): string
-	{
-		return $this->filesystem->absolutePath($this->pathInfo);
-	}
-
 	public function delete(): void
 	{
 		$this->filesystem->delete($this->pathInfo);

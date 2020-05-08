@@ -23,8 +23,6 @@ interface FileInterface
 
 	public function getPath(): string;
 
-	public function getAbsolutePath(): string;
-
 	public function getMimeType(): ImageMimeType;
 
 }
