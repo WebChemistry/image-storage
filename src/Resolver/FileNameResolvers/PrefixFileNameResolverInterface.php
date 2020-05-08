@@ -5,9 +5,9 @@ namespace WebChemistry\ImageStorage\Resolver\FileNameResolvers;
 use Nette\Utils\Random;
 use WebChemistry\ImageStorage\File\FileFactoryInterface;
 use WebChemistry\ImageStorage\File\FileInterface;
-use WebChemistry\ImageStorage\Resolver\FileNameResolver;
+use WebChemistry\ImageStorage\Resolver\FileNameResolverInterface;
 
-final class PrefixFileNameResolver implements FileNameResolver
+final class PrefixFileNameResolverInterface implements FileNameResolverInterface
 {
 
 	private FileFactoryInterface $fileFactory;

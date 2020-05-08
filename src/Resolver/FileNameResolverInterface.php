@@ -4,7 +4,7 @@ namespace WebChemistry\ImageStorage\Resolver;
 
 use WebChemistry\ImageStorage\File\FileInterface;
 
-interface FileNameResolver
+interface FileNameResolverInterface
 {
 
 	public function resolve(FileInterface $file): string;

@@ -13,20 +13,20 @@ use WebChemistry\ImageStorage\File\FileProviderInterface;
 use WebChemistry\ImageStorage\Filter\FilterProcessorInterface;
 use WebChemistry\ImageStorage\Filter\VoidFilterProcessor;
 use WebChemistry\ImageStorage\ImageStorageInterface;
-use WebChemistry\ImageStorage\Resolver\FileNameResolver;
+use WebChemistry\ImageStorage\Resolver\FileNameResolverInterface;
 
 class ImageStorage implements ImageStorageInterface
 {
 
 	private FileFactory $fileFactory;
 
-	private FileNameResolver $fileNameResolver;
+	private FileNameResolverInterface $fileNameResolver;
 
 	private FilterProcessorInterface $filterProcessor;
 
 	public function __construct(
 		FileFactory $fileFactory,
-		FileNameResolver $fileNameResolver,
+		FileNameResolverInterface $fileNameResolver,
 		?FilterProcessorInterface $filterProcessor = null
 	)
 	{

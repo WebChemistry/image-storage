@@ -2,15 +2,16 @@
 
 namespace WebChemistry\ImageStorage\Resolver\FileNameResolvers;
 
+use Ramsey\Uuid\Uuid;
 use WebChemistry\ImageStorage\File\FileInterface;
-use WebChemistry\ImageStorage\Resolver\FileNameResolver;
+use WebChemistry\ImageStorage\Resolver\FileNameResolverInterface;
 
-final class OriginalFileNameResolver implements FileNameResolver
+final class UuidFileNameResolverInterface implements FileNameResolverInterface
 {
 
 	public function resolve(FileInterface $file): string
 	{
-		return $file->getImage()->getName();
+		return Uuid::uuid4()->toString();
 	}
 
 }
