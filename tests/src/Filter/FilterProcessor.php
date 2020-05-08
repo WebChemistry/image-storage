@@ -20,20 +20,20 @@ final class FilterProcessor implements FilterProcessorInterface
 	/**
 	 * @param mixed[] $options
 	 */
-	public function process(FileInterface $file, FileInterface $original, array $options = []): string
+	public function process(FileInterface $target, FileInterface $source, array $options = []): string
 	{
-		$filter = $file->getImage()->getFilter();
+		$filter = $target->getImage()->getFilter();
 		if (!$filter) {
-			return $file->getContent();
+			return $target->getContent();
 		}
 
-		$operation = $this->operationRegistry->get($filter, $file->getImage()->getScope());
+		$operation = $this->operationRegistry->get($filter, $target->getImage()->getScope());
 
 		if (!$operation) {
-			throw new LogicException(sprintf('Operation not found for %s', $file->getImage()->getId()));
+			throw new LogicException(sprintf('Operation not found for %s', $target->getImage()->getId()));
 		}
 
-		$operation->operate($image = Image::fromString($original->getContent(), $format), $filter);
+		$operation->operate($image = Image::fromString($source->getContent(), $format), $filter);
 
 		return $image->toString($format);
 	}

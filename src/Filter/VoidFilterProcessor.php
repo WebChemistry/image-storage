@@ -11,13 +11,13 @@ final class VoidFilterProcessor implements FilterProcessorInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function process(FileInterface $file, FileInterface $original, array $options = []): string
+	public function process(FileInterface $target, FileInterface $source, array $options = []): string
 	{
-		if ($file->getImage()->getFilter()) {
+		if ($target->getImage()->getFilter()) {
 			throw new LogicException(sprintf('%s does not support filters', self::class));
 		}
 
-		return $file->getContent();
+		return $target->getContent();
 	}
 
 }

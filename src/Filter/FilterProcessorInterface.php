@@ -10,6 +10,6 @@ interface FilterProcessorInterface
 	/**
 	 * @param mixed[] $options
 	 */
-	public function process(FileInterface $file, FileInterface $original, array $options = []): string;
+	public function process(FileInterface $target, FileInterface $source, array $options = []): string;
 
 }
