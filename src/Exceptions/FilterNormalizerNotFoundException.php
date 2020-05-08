@@ -2,7 +2,9 @@
 
 namespace WebChemistry\ImageStorage\Exceptions;
 
-class FilterNormalizerNotFoundException extends \Exception
+use Exception;
+
+class FilterNormalizerNotFoundException extends Exception
 {
 
 }
