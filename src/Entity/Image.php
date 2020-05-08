@@ -38,6 +38,17 @@ abstract class Image implements ImageInterface
 		return $this->name;
 	}
 
+	public function getSuffix(): ?string
+	{
+		$this->throwIfClosed();
+
+		if (($pos = strrpos($this->name, '.')) === false) {
+			return null;
+		}
+
+		return substr($this->name, $pos + 1);
+	}
+
 	public function getScope(): Scope
 	{
 		$this->throwIfClosed();

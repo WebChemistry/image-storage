@@ -12,6 +12,8 @@ interface ImageInterface
 
 	public function getName(): string;
 
+	public function getSuffix(): ?string;
+
 	public function getScope(): Scope;
 
 	public function getFilter(): ?FilterInterface;
