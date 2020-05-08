@@ -13,9 +13,12 @@ final class LocalFilesystem implements FilesystemInterface
 
 	private LeagueFilesystemInterface $bridge;
 
+	private bool $mkdir;
+
 	public function __construct(LeagueFilesystemFactoryInterface $leagueFilesystemFactory)
 	{
 		$this->bridge = $leagueFilesystemFactory->create();
+		$this->mkdir = $leagueFilesystemFactory->needsMkDir();
 	}
 
 	/**
@@ -47,7 +50,9 @@ final class LocalFilesystem implements FilesystemInterface
 	 */
 	public function putWithMkdir(PathInfoInterface $path, $content, array $config = []): void
 	{
-		$this->bridge->createDir($path->toString($path::ALL & ~$path::IMAGE));
+		if ($this->mkdir) {
+			$this->bridge->createDir($path->toString($path::ALL & ~$path::IMAGE));
+		}
 
 		$this->put($path, $content, $config);
 	}

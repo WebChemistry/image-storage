@@ -16,6 +16,11 @@ final class LocalLeagueFilesystemFactory implements LeagueFilesystemFactoryInter
 		$this->baseDir = $baseDir;
 	}
 
+	public function needsMkDir(): bool
+	{
+		return true;
+	}
+
 	public function create(): FilesystemInterface
 	{
 		return new Filesystem(new Local($this->baseDir));

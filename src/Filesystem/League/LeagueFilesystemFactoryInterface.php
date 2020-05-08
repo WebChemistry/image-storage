@@ -7,6 +7,8 @@ use League\Flysystem\FilesystemInterface;
 interface LeagueFilesystemFactoryInterface
 {
 
+	public function needsMkDir(): bool;
+
 	public function create(): FilesystemInterface;
 
 }
