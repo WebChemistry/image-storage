@@ -5,20 +5,21 @@ namespace WebChemistry\ImageStorage\Transaction;
 use Throwable;
 use WebChemistry\ImageStorage\Entity\ImageInterface;
 use WebChemistry\ImageStorage\Entity\PersistentImageInterface;
+use WebChemistry\ImageStorage\Entity\PromisedImage;
+use WebChemistry\ImageStorage\Entity\PromisedImageInterface;
 use WebChemistry\ImageStorage\Exceptions\NotSupportedException;
 use WebChemistry\ImageStorage\Exceptions\RollbackFailedException;
 use WebChemistry\ImageStorage\Exceptions\TransactionException;
 use WebChemistry\ImageStorage\ImageStorageInterface;
-use WebChemistry\ImageStorage\Transaction\Entity\PromisedImage;
 
-final class Transaction implements TransactionInterface, ImageStorageInterface
+final class Transaction implements TransactionInterface
 {
 
 	private ImageStorageInterface $imageStorage;
 
 	private bool $commited = false;
 
-	/** @var PromisedImage[] */
+	/** @var PromisedImageInterface[] */
 	private array $persisted = [];
 
 	public function __construct(ImageStorageInterface $imageStorage)
@@ -34,32 +35,20 @@ final class Transaction implements TransactionInterface, ImageStorageInterface
 
 		$this->commited = true;
 
-		$process = [];
-		foreach ($this->persisted as $persited) {
+		foreach ($this->persisted as $image) {
 			try {
-				$image = $this->imageStorage->persist($persited);
+				$image->process([$this->imageStorage, 'persist']);
 			} catch (Throwable $e) {
 				$this->rollback();
+
 				throw new TransactionException('Transaction failed', 0, $e);
 			}
-
-			$process[] = [$persited, $image];
-		}
-
-		try {
-			/**
-			 * @var PromisedImage $persisted
-			 * @var PromisedImage $image
-			 */
-			foreach ($process as [$persisted, $image]) {
-				$persisted->_commited($image);
-			}
-		} catch (Throwable $e) {
-			$this->rollback();
-			throw new TransactionException('Transaction failed', 0, $e);
 		}
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public function rollback(): void
 	{
 		if (!$this->commited) {
@@ -67,15 +56,17 @@ final class Transaction implements TransactionInterface, ImageStorageInterface
 		}
 
 		$exception = null;
-		foreach ($this->persisted as $persisted) {
-			if ($persisted->isCommited()) {
+		foreach ($this->persisted as $image) {
+			if (!$image->isPending()) {
 				try {
-					$this->imageStorage->remove($persisted);
-				} catch (Throwable $e) {
-					$exception = $e;
+					$this->imageStorage->remove($image->getResult());
+				} catch (Throwable $exception) {
+					// no need
 				}
 			}
 		}
+
+		$this->persisted = [];
 
 		if ($exception) {
 			throw new RollbackFailedException('Rollback failed', 0, $exception);
@@ -89,7 +80,7 @@ final class Transaction implements TransactionInterface, ImageStorageInterface
 
 	public function remove(PersistentImageInterface $image): PersistentImageInterface
 	{
-		throw new NotSupportedException('Cannot use remove in transaction');
+		throw new NotSupportedException('Not implemented');
 	}
 
 }

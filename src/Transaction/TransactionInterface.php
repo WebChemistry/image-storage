@@ -2,11 +2,19 @@
 
 namespace WebChemistry\ImageStorage\Transaction;
 
-interface TransactionInterface
+use WebChemistry\ImageStorage\Exceptions\RollbackFailedException;
+use WebChemistry\ImageStorage\Exceptions\TransactionException;
+use WebChemistry\ImageStorage\ImageStorageInterface;
+
+interface TransactionInterface extends ImageStorageInterface
 {
 
 	public function commit(): void;
 
+	/**
+	 * @throws RollbackFailedException
+	 * @throws TransactionException
+	 */
 	public function rollback(): void;
 
 }
