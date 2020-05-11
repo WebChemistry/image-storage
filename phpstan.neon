@@ -1,0 +1,5 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Method [a-zA-Z0-9\\_]+::[a-zA-Z0-9\\_]++\(\) should return static\([a-zA-Z0-9\\_]+\) but returns [a-zA-Z0-9\\_]+\.$#'
+			path: src/Entity/PromisedImage.php

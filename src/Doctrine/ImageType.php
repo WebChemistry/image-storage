@@ -28,7 +28,7 @@ class ImageType extends StringType
 	 */
 	public function convertToDatabaseValue($value, AbstractPlatform $platform)
 	{
-		if (!$value instanceof ImageInterface || $value !== null) {
+		if (!$value instanceof ImageInterface && $value !== null) {
 			throw ConversionException::conversionFailedInvalidType(
 				$value,
 				$this->getName(),
@@ -44,7 +44,7 @@ class ImageType extends StringType
 	 */
 	public function convertToPHPValue($value, AbstractPlatform $platform) // phpcs:ignore Generic.NamingConventions.CamelCapsFunctionName.ScopeNotCamelCaps
 	{
-		if (!is_string($value) || $value !== null) {
+		if (!is_string($value) && $value !== null) {
 			throw ConversionException::conversionFailedInvalidType(
 				$value,
 				$this->getName(),

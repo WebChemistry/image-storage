@@ -23,96 +23,76 @@ final class PromisedImage implements PromisedImageInterface
 
 	public function getId(): string
 	{
-		$this->throwIfPending();
-
-		return $this->result->getId();
+		return $this->getResult()->getId();
 	}
 
 	public function getName(): string
 	{
-		$this->throwIfPending();
-
-		return $this->result->getName();
+		return $this->getResult()->getName();
 	}
 
 	public function getSuffix(): ?string
 	{
-		$this->throwIfPending();
-
-		return $this->result->getSuffix();
+		return $this->getResult()->getSuffix();
 	}
 
 	public function getScope(): Scope
 	{
-		$this->throwIfPending();
-
-		return $this->result->getScope();
+		return $this->getResult()->getScope();
 	}
 
 	public function getFilter(): ?FilterInterface
 	{
-		$this->throwIfPending();
-
-		return $this->result->getFilter();
+		return $this->getResult()->getFilter();
 	}
 
 	public function hasFilter(): bool
 	{
-		$this->throwIfPending();
-
-		return $this->result->hasFilter();
+		return $this->getResult()->hasFilter();
 	}
 
-	public function withScope(Scope $scope)
+	/**
+	 * @inheritDoc
+	 */
+	public function withScope(Scope $scope): PersistentImageInterface
 	{
-		$this->throwIfPending();
-
-		return $this->result->withScope($scope);
+		return $this->getResult()->withScope($scope);
 	}
 
-	public function withName(string $name)
+	/**
+	 * @inheritDoc
+	 */
+	public function withName(string $name): PersistentImageInterface
 	{
-		$this->throwIfPending();
-
-		return $this->result->withName($name);
+		return $this->getResult()->withName($name);
 	}
 
-	public function withFilter(string $name, array $options = [])
+	/**
+	 * @inheritDoc
+	 */
+	public function withFilter(string $name, array $options = []): PersistentImageInterface
 	{
-		$this->throwIfPending();
-
-		return $this->result->withFilter($name, $options);
+		return $this->getResult()->withFilter($name, $options);
 	}
 
-	public function withFilterObject(FilterInterface $filter)
+	/**
+	 * @inheritDoc
+	 */
+	public function withFilterObject(FilterInterface $filter): PersistentImageInterface
 	{
-		$this->throwIfPending();
-
-		return $this->result->withFilterObject($filter);
+		return $this->getResult()->withFilterObject($filter);
 	}
 
-	public function getOriginal()
+	public function getOriginal(): PersistentImageInterface
 	{
-		$this->throwIfPending();
-
-		return $this->result->getOriginal();
+		return $this->getResult()->getOriginal();
 	}
 
 	public function isClosed(): bool
 	{
-		$this->throwIfPending();
-
-		return $this->result->isClosed();
+		return $this->getResult()->isClosed();
 	}
 
-	public function close(): void
-	{
-		$this->throwIfPending();
-
-		$this->result->close();
-	}
-
-	// transaction
 
 	public function process(callable $action): void
 	{
@@ -138,7 +118,9 @@ final class PromisedImage implements PromisedImageInterface
 
 	public function getResult(): PersistentImageInterface
 	{
-		$this->throwIfPending();
+		if (!$this->result) {
+			throw new PromiseException('Promise is still pending');
+		}
 
 		return $this->result;
 	}
@@ -146,13 +128,6 @@ final class PromisedImage implements PromisedImageInterface
 	public function isPending(): bool
 	{
 		return !$this->result;
-	}
-
-	private function throwIfPending(): void
-	{
-		if ($this->isPending()) {
-			throw new PromiseException('Promise is still pending');
-		}
 	}
 
 }

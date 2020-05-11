@@ -40,14 +40,16 @@ class TransactionTest extends FileTestCase
 		$this->transactionFactory = new TransactionFactory($storage);
 	}
 
-	public function testPreCommit() {
+	public function testPreCommit(): void
+	{
 		$transaction = $this->transactionFactory->create();
 		$transaction->persist(new StorableImage(new FilePathUploader($this->imageJpg), 'image.jpg'));
 
 		$this->assertTempFileNotExists('media/image.jpg');
 	}
 
-	public function testCommit() {
+	public function testCommit(): void
+	{
 		$transaction = $this->transactionFactory->create();
 		$transaction->persist(new StorableImage(new FilePathUploader($this->imageJpg), 'image.jpg'));
 
@@ -56,7 +58,8 @@ class TransactionTest extends FileTestCase
 		$this->assertTempFileExists('media/image.jpg');
 	}
 
-	public function testRollback() {
+	public function testRollback(): void
+	{
 		$transaction = $this->transactionFactory->create();
 		$transaction->persist(new StorableImage(new FilePathUploader($this->imageJpg), 'image.jpg'));
 

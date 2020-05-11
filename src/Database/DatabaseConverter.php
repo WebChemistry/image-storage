@@ -24,7 +24,7 @@ final class DatabaseConverter implements DatabaseConverterInterface
 
 		if ($image instanceof StorableImageInterface) {
 			throw new InvalidArgumentException(
-				sprintf('Cannot convert %s to database, first persist image and pass the result', $image)
+				sprintf('Cannot convert %s to database, first persist image and pass the result', $image->getId())
 			);
 		}
 
