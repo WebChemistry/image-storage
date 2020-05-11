@@ -2,6 +2,7 @@
 
 namespace WebChemistry\ImageStorage\LinkGenerator;
 
+use WebChemistry\ImageStorage\Entity\EmptyImageInterface;
 use WebChemistry\ImageStorage\Entity\PersistentImageInterface;
 use WebChemistry\ImageStorage\Exceptions\FileNotFoundException;
 use WebChemistry\ImageStorage\File\FileFactoryInterface;
@@ -27,6 +28,10 @@ final class LinkGenerator implements LinkGeneratorInterface
 	public function link(?PersistentImageInterface $image, array $options = []): ?string
 	{
 		if (!$image) {
+			return null;
+		}
+
+		if ($image instanceof EmptyImageInterface) {
 			return null;
 		}
 

@@ -2,6 +2,8 @@
 
 namespace WebChemistry\ImageStorage\Storage;
 
+use WebChemistry\ImageStorage\Entity\EmptyImage;
+use WebChemistry\ImageStorage\Entity\EmptyImageInterface;
 use WebChemistry\ImageStorage\Entity\ImageInterface;
 use WebChemistry\ImageStorage\Entity\PersistentImage;
 use WebChemistry\ImageStorage\Entity\PersistentImageInterface;
@@ -46,6 +48,10 @@ class ImageStorage implements ImageStorageInterface
 
 	public function persist(ImageInterface $image): PersistentImageInterface
 	{
+		if ($image instanceof EmptyImageInterface) {
+			throw new InvalidArgumentException('Cannot persist an empty image');
+		}
+
 		$close = $image;
 
 		$filter = $image->getFilter();
@@ -76,6 +82,10 @@ class ImageStorage implements ImageStorageInterface
 
 	public function remove(PersistentImageInterface $image): PersistentImageInterface
 	{
+		if ($image instanceof EmptyImageInterface) {
+			throw new InvalidArgumentException('Cannot remove an empty image');
+		}
+
 		$this->createFile($image)
 			->delete();
 
@@ -83,7 +93,7 @@ class ImageStorage implements ImageStorageInterface
 			$image->close();
 		}
 
-		return $image;
+		return new EmptyImage();
 	}
 
 }
