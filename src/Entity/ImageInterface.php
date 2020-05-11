@@ -20,6 +20,8 @@ interface ImageInterface
 
 	public function hasFilter(): bool;
 
+	public function isClosed(): bool;
+
 	/**
 	 * @return static
 	 */
