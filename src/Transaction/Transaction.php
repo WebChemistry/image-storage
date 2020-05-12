@@ -73,12 +73,12 @@ final class Transaction implements TransactionInterface
 		}
 	}
 
-	public function persist(ImageInterface $image): PersistentImageInterface
+	public function persist(ImageInterface $image): PromisedImageInterface
 	{
 		return $this->persisted[] = new PromisedImage($image);
 	}
 
-	public function remove(PersistentImageInterface $image): PersistentImageInterface
+	public function remove(PersistentImageInterface $image): PromisedImageInterface
 	{
 		throw new NotSupportedException('Not implemented');
 	}
