@@ -11,7 +11,7 @@ final class PromisedImage implements PromisedImageInterface
 
 	private ImageInterface $source;
 
-	private ?PersistentImage $result = null;
+	private ?PersistentImageInterface $result = null;
 
 	/** @var callable[] */
 	private array $then = [];
