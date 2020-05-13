@@ -95,7 +95,7 @@ class LocalStorageTest extends FileTestCase
 
 		$persistent = $this->storage->persist($image);
 
-		$this->assertSame('media/name.jpg', $this->linkGenerator->link($persistent));
+		$this->assertSame('/media/name.jpg', $this->linkGenerator->link($persistent));
 	}
 
 	public function testFiltersWithNewUpload(): void
@@ -132,7 +132,7 @@ class LocalStorageTest extends FileTestCase
 
 		$link = $this->linkGenerator->link($persistent->withFilter('thumbnail'));
 
-		$this->assertSame('cache/_thumbnail/name.jpg', $link);
+		$this->assertSame('/cache/_thumbnail/name.jpg', $link);
 		$this->assertTempFileExists('media/name.jpg');
 		$this->assertTempFileExists('cache/_thumbnail/name.jpg');
 		$size = getimagesize($this->getAbsolutePath('cache/_thumbnail/name.jpg'));

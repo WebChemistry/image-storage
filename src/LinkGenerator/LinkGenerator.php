@@ -48,11 +48,11 @@ final class LinkGenerator implements LinkGeneratorInterface
 				return null;
 			}
 
-			return $this->fileFactory->create($image)
+			return '/' . $this->fileFactory->create($image)
 				->getPath();
 		}
 
-		return $file->getPath();
+		return '/' . $file->getPath();
 	}
 
 }
