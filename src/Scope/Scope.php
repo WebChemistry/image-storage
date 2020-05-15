@@ -17,6 +17,33 @@ class Scope
 		}
 	}
 
+	public function startsWith(string $scope): bool
+	{
+		if (!$this->scopes) {
+			return false;
+		}
+
+		return $this->scopes[0] === $scope;
+	}
+
+	public function endsWith(string $scope): bool
+	{
+		if (!$this->scopes) {
+			return false;
+		}
+
+		return $this->scopes[array_key_last($this->scopes)] === $scope;
+	}
+
+	public function contains(string $scope): bool
+	{
+		if (!$this->scopes) {
+			return false;
+		}
+
+		return in_array($scope, $this->scopes);
+	}
+
 	protected function addScope(string $scope): void
 	{
 		$scope = trim($scope, " \t\n\r\0\v/");
