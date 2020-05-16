@@ -46,6 +46,6 @@ interface ImageInterface
 	/**
 	 * @return static
 	 */
-	public function withFilterObject(FilterInterface $filter);
+	public function withFilterObject(?FilterInterface $filter);
 
 }

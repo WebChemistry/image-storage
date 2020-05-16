@@ -78,7 +78,7 @@ final class PromisedImage implements PromisedImageInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function withFilterObject(FilterInterface $filter): PersistentImageInterface
+	public function withFilterObject(?FilterInterface $filter): PersistentImageInterface
 	{
 		return $this->getResult()->withFilterObject($filter);
 	}

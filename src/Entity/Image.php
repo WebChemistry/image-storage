@@ -113,7 +113,7 @@ abstract class Image implements ImageInterface
 	/**
 	 * @return static
 	 */
-	public function withFilterObject(FilterInterface $filter)
+	public function withFilterObject(?FilterInterface $filter)
 	{
 		$this->throwIfClosed();
 
