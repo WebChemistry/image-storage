@@ -109,6 +109,15 @@ class Scope
 		return implode('/', $this->scopes);
 	}
 
+	public function toNullableString(): ?string
+	{
+		if ($this->isEmpty()) {
+			return null;
+		}
+
+		return implode('/', $this->scopes);
+	}
+
 	public function __toString(): string
 	{
 		return $this->toString();
