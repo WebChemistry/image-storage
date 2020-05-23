@@ -2,15 +2,21 @@
 
 namespace WebChemistry\ImageStorage\Doctrine;
 
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\StringType;
+use Doctrine\DBAL\Types\Type;
+use LogicException;
 use WebChemistry\ImageStorage\Database\DatabaseConverter;
 use WebChemistry\ImageStorage\Database\DatabaseConverterInterface;
 use WebChemistry\ImageStorage\Entity\ImageInterface;
 
 class ImageType extends StringType
 {
+
+	private const TYPE = 'image';
+	private const DB_TYPE = 'db_image';
 
 	private DatabaseConverterInterface $databaseConverter;
 
@@ -52,7 +58,7 @@ class ImageType extends StringType
 			);
 		}
 
-		return $this->databaseConverter->convertToPhp($value);
+		return $this->getDatabaseConverter()->convertToPhp($value);
 	}
 
 	/**
@@ -61,6 +67,29 @@ class ImageType extends StringType
 	public function getName()
 	{
 		return 'image';
+	}
+
+	public static function register(Connection $connection): void
+	{
+		if (!$connection->getDatabasePlatform()->hasDoctrineTypeMappingFor(self::DB_TYPE)) {
+			self::registerType();
+
+			$connection->getDatabasePlatform()->registerDoctrineTypeMapping(self::DB_TYPE, self::TYPE);
+		}
+	}
+
+	public static function registerType(): void
+	{
+		if (Type::hasType(self::TYPE)) {
+			$class = Type::getTypesMap()[self::TYPE];
+			if ($class !== static::class) {
+				throw new LogicException(
+					sprintf('Doctrine type %s is already registered for class %s', self::TYPE, $class)
+				);
+			}
+		} else {
+			Type::addType(self::TYPE, static::class);
+		}
 	}
 
 }
