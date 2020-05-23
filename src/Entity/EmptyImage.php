@@ -3,12 +3,14 @@
 namespace WebChemistry\ImageStorage\Entity;
 
 use WebChemistry\ImageStorage\Exceptions\EmptyImageException;
+use WebChemistry\ImageStorage\Scope\Scope;
 
 final class EmptyImage extends Image implements EmptyImageInterface
 {
 
-	public function __construct()
+	public function __construct(?Scope $scope = null)
 	{
+		$this->scope = $scope;
 	}
 
 	public function getId(): string
