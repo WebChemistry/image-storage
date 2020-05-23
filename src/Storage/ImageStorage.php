@@ -2,12 +2,15 @@
 
 namespace WebChemistry\ImageStorage\Storage;
 
+use Psr\EventDispatcher\EventDispatcherInterface;
 use WebChemistry\ImageStorage\Entity\EmptyImage;
 use WebChemistry\ImageStorage\Entity\EmptyImageInterface;
 use WebChemistry\ImageStorage\Entity\ImageInterface;
 use WebChemistry\ImageStorage\Entity\PersistentImage;
 use WebChemistry\ImageStorage\Entity\PersistentImageInterface;
 use WebChemistry\ImageStorage\Entity\StorableImageInterface;
+use WebChemistry\ImageStorage\Event\PersistedImageEvent;
+use WebChemistry\ImageStorage\Event\RemovedImageEvent;
 use WebChemistry\ImageStorage\Exceptions\InvalidArgumentException;
 use WebChemistry\ImageStorage\File\FileFactoryInterface;
 use WebChemistry\ImageStorage\File\FileInterface;
@@ -26,15 +29,19 @@ class ImageStorage implements ImageStorageInterface
 
 	private FilterProcessorInterface $filterProcessor;
 
+	private ?EventDispatcherInterface $dispatcher;
+
 	public function __construct(
 		FileFactoryInterface $fileFactory,
 		FileNameResolverInterface $fileNameResolver,
-		?FilterProcessorInterface $filterProcessor = null
+		?FilterProcessorInterface $filterProcessor = null,
+		?EventDispatcherInterface $dispatcher = null
 	)
 	{
 		$this->fileNameResolver = $fileNameResolver;
 		$this->fileFactory = $fileFactory;
 		$this->filterProcessor = $filterProcessor ?? new VoidFilterProcessor();
+		$this->dispatcher = $dispatcher;
 	}
 
 	protected function createFile(ImageInterface $image): FileInterface
@@ -71,10 +78,16 @@ class ImageStorage implements ImageStorageInterface
 			);
 
 		$persistent = new PersistentImage($close->getId());
+		if ($filter) {
+			$persistent = $persistent->withFilterObject($filter);
+		}
+
+		if ($this->dispatcher) {
+			$this->dispatcher->dispatch(new PersistedImageEvent($this, $close, $persistent));
+		}
+
 		if ($close instanceof StorableImageInterface) {
 			$close->close();
-		} elseif ($filter) {
-			$persistent = $persistent->withFilterObject($filter);
 		}
 
 		return $persistent;
@@ -88,6 +101,10 @@ class ImageStorage implements ImageStorageInterface
 
 		$this->createFile($image)
 			->delete();
+
+		if ($this->dispatcher) {
+			$this->dispatcher->dispatch(new RemovedImageEvent($this, $image));
+		}
 
 		if ($image instanceof PersistentImage) {
 			$image->close();
