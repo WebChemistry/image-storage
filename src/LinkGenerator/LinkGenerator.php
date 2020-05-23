@@ -8,6 +8,7 @@ use WebChemistry\ImageStorage\Exceptions\FileNotFoundException;
 use WebChemistry\ImageStorage\File\FileFactoryInterface;
 use WebChemistry\ImageStorage\ImageStorageInterface;
 use WebChemistry\ImageStorage\LinkGeneratorInterface;
+use WebChemistry\ImageStorage\Resolver\DefaultImageResolverInterface;
 
 final class LinkGenerator implements LinkGeneratorInterface
 {
@@ -16,10 +17,17 @@ final class LinkGenerator implements LinkGeneratorInterface
 
 	private FileFactoryInterface $fileFactory;
 
-	public function __construct(ImageStorageInterface $imageStorage, FileFactoryInterface $fileFactory)
+	private DefaultImageResolverInterface $defaultImageResolver;
+
+	public function __construct(
+		ImageStorageInterface $imageStorage,
+		FileFactoryInterface $fileFactory,
+		DefaultImageResolverInterface $defaultImageResolver
+	)
 	{
 		$this->imageStorage = $imageStorage;
 		$this->fileFactory = $fileFactory;
+		$this->defaultImageResolver = $defaultImageResolver;
 	}
 
 	/**
@@ -27,25 +35,23 @@ final class LinkGenerator implements LinkGeneratorInterface
 	 */
 	public function link(?PersistentImageInterface $image, array $options = []): ?string
 	{
-		if (!$image) {
-			return null;
-		}
-
-		if ($image instanceof EmptyImageInterface) {
-			return null;
+		if (!$image || $image instanceof EmptyImageInterface) {
+			return $this->defaultImageResolver->resolve($this, $image, $options);
 		}
 
 		$file = $this->fileFactory->create($image);
 		if (!$file->exists()) {
 			$image = $file->getImage();
+			assert($image instanceof PersistentImageInterface);
+
 			if (!$image->hasFilter()) {
-				return null;
+				return $this->defaultImageResolver->resolve($this, $image, $options);
 			}
 
 			try {
 				$image = $this->imageStorage->persist($image);
 			} catch (FileNotFoundException $exception) {
-				return null;
+				return $this->defaultImageResolver->resolve($this, $image, $options);
 			}
 
 			return '/' . $this->fileFactory->create($image)

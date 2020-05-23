@@ -6,10 +6,10 @@ use WebChemistry\ImageStorage\Entity\PersistentImage;
 use WebChemistry\ImageStorage\Entity\PersistentImageInterface;
 use WebChemistry\ImageStorage\Entity\StorableImage;
 use WebChemistry\ImageStorage\File\FileFactory;
-use WebChemistry\ImageStorage\Filesystem\League\LocalLeagueFilesystemFactory;
 use WebChemistry\ImageStorage\Filesystem\LocalFilesystem;
 use WebChemistry\ImageStorage\LinkGenerator\LinkGenerator;
 use WebChemistry\ImageStorage\PathInfo\PathInfoFactory;
+use WebChemistry\ImageStorage\Resolver\DefaultImageResolvers\NullDefaultImageResolver;
 use WebChemistry\ImageStorage\Resolver\FileNameResolvers\OriginalFileNameResolver;
 use WebChemistry\ImageStorage\Scope\Scope;
 use WebChemistry\ImageStorage\Storage\ImageStorage;
@@ -35,12 +35,13 @@ class LocalStorageTest extends FileTestCase
 
 		$processor = new FilterProcessor($registry);
 		$fileFactory = new FileFactory(
-			new LocalFilesystem(new LocalLeagueFilesystemFactory($this->getAbsolutePath())),
+			new LocalFilesystem($this->getAbsolutePath()),
 			new PathInfoFactory()
 		);
+		$defaultImageResolver = new NullDefaultImageResolver();
 
 		$this->storage = new ImageStorage($fileFactory, new OriginalFileNameResolver(), $processor);
-		$this->linkGenerator = new LinkGenerator($this->storage, $fileFactory);
+		$this->linkGenerator = new LinkGenerator($this->storage, $fileFactory, $defaultImageResolver);
 	}
 
 	public function testPersist(): void

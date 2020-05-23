@@ -4,7 +4,6 @@ namespace Project\Tests;
 
 use WebChemistry\ImageStorage\Entity\StorableImage;
 use WebChemistry\ImageStorage\File\FileFactory;
-use WebChemistry\ImageStorage\Filesystem\League\LocalLeagueFilesystemFactory;
 use WebChemistry\ImageStorage\Filesystem\LocalFilesystem;
 use WebChemistry\ImageStorage\PathInfo\PathInfoFactory;
 use WebChemistry\ImageStorage\Resolver\FileNameResolvers\OriginalFileNameResolver;
@@ -22,6 +21,8 @@ class TransactionTest extends FileTestCase
 
 	private TransactionFactoryInterface $transactionFactory;
 
+	private ImageStorage $storage;
+
 	protected function _before(): void
 	{
 		parent::_before();
@@ -31,13 +32,13 @@ class TransactionTest extends FileTestCase
 
 		$processor = new FilterProcessor($registry);
 		$fileFactory = new FileFactory(
-			new LocalFilesystem(new LocalLeagueFilesystemFactory($this->getAbsolutePath())),
+			new LocalFilesystem($this->getAbsolutePath()),
 			new PathInfoFactory()
 		);
 
-		$storage = new ImageStorage($fileFactory, new OriginalFileNameResolver(), $processor);
+		$this->storage = $storage = new ImageStorage($fileFactory, new OriginalFileNameResolver(), $processor);
 
-		$this->transactionFactory = new TransactionFactory($storage);
+		$this->transactionFactory = new TransactionFactory($storage, $fileFactory);
 	}
 
 	public function testPreCommit(): void
@@ -56,6 +57,41 @@ class TransactionTest extends FileTestCase
 		$transaction->commit();
 
 		$this->assertTempFileExists('media/image.jpg');
+	}
+
+	public function testCommitRemove(): void
+	{
+		$transaction = $this->transactionFactory->create();
+		$image = $this->storage->persist(new StorableImage(new FilePathUploader($this->imageJpg), 'image.jpg'));
+		$this->assertTempFileExists('media/image.jpg');
+
+		$transaction->remove($image);
+
+		$this->assertTempFileExists('media/image.jpg');
+
+		$transaction->commit();
+
+		$this->assertTempFileNotExists('media/image.jpg');
+	}
+
+	public function testRollbackRemove(): void
+	{
+		$transaction = $this->transactionFactory->create();
+		$image = $this->storage->persist(new StorableImage(new FilePathUploader($this->imageJpg), 'image.jpg'));
+		$this->assertTempFileExists('media/image.jpg');
+
+		$transaction->remove($image);
+
+		$this->assertTempFileExists('media/image.jpg');
+
+		$transaction->commit();
+
+		$this->assertTempFileNotExists('media/image.jpg');
+
+		$transaction->rollback();
+
+		$this->assertTempFileExists('media/image.jpg');
+		$this->assertFileEquals($this->imageJpg, $this->getAbsolutePath('media/image.jpg'));
 	}
 
 	public function testRollback(): void
