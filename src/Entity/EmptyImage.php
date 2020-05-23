@@ -10,7 +10,7 @@ final class EmptyImage extends Image implements EmptyImageInterface
 
 	public function __construct(?Scope $scope = null)
 	{
-		$this->scope = $scope;
+		$this->scope = $scope ?? new Scope();
 	}
 
 	public function getId(): string
