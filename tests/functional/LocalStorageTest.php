@@ -2,14 +2,17 @@
 
 namespace Project\Tests;
 
+use WebChemistry\ImageStorage\Entity\EmptyImage;
 use WebChemistry\ImageStorage\Entity\PersistentImage;
 use WebChemistry\ImageStorage\Entity\PersistentImageInterface;
 use WebChemistry\ImageStorage\Entity\StorableImage;
+use WebChemistry\ImageStorage\Entity\StorableImageInterface;
 use WebChemistry\ImageStorage\File\FileFactory;
 use WebChemistry\ImageStorage\Filesystem\LocalFilesystem;
 use WebChemistry\ImageStorage\LinkGenerator\LinkGenerator;
 use WebChemistry\ImageStorage\PathInfo\PathInfoFactory;
 use WebChemistry\ImageStorage\Resolver\DefaultImageResolvers\NullDefaultImageResolver;
+use WebChemistry\ImageStorage\Resolver\DefaultImageResolvers\ScopeDefaultImageResolver;
 use WebChemistry\ImageStorage\Resolver\FileNameResolvers\OriginalFileNameResolver;
 use WebChemistry\ImageStorage\Scope\Scope;
 use WebChemistry\ImageStorage\Storage\ImageStorage;
@@ -26,6 +29,8 @@ class LocalStorageTest extends FileTestCase
 
 	private LinkGenerator $linkGenerator;
 
+	private FileFactory $fileFactory;
+
 	protected function _before(): void
 	{
 		parent::_before();
@@ -34,14 +39,14 @@ class LocalStorageTest extends FileTestCase
 		$registry->add(new ThumbnailOperation());
 
 		$processor = new FilterProcessor($registry);
-		$fileFactory = new FileFactory(
+		$this->fileFactory = new FileFactory(
 			new LocalFilesystem($this->getAbsolutePath()),
 			new PathInfoFactory()
 		);
 		$defaultImageResolver = new NullDefaultImageResolver();
 
-		$this->storage = new ImageStorage($fileFactory, new OriginalFileNameResolver(), $processor);
-		$this->linkGenerator = new LinkGenerator($this->storage, $fileFactory, $defaultImageResolver);
+		$this->storage = new ImageStorage($this->fileFactory, new OriginalFileNameResolver(), $processor);
+		$this->linkGenerator = new LinkGenerator($this->storage, $this->fileFactory, $defaultImageResolver);
 	}
 
 	public function testPersist(): void
@@ -157,6 +162,38 @@ class LocalStorageTest extends FileTestCase
 		$link = $this->linkGenerator->link($persistent);
 
 		$this->assertNull($link);
+	}
+
+	public function testScopeDefaultImageResolve(): void
+	{
+		$linkGenerator = new LinkGenerator($this->storage, $this->fileFactory, new ScopeDefaultImageResolver([
+			'foo' => 'noimage/foo.png',
+		]));
+
+		$this->storage->persist(
+			$this->createStorable('foo.png')
+				->withScope(new Scope('noimage'))
+		);
+
+		$this->assertNull($linkGenerator->link(new PersistentImage('bar.png')));
+		$this->assertNull($linkGenerator->link(new EmptyImage()));
+		$this->assertSame('/media/noimage/foo.png', $linkGenerator->link(new PersistentImage('foo/bar.png')));
+		$this->assertSame('/media/noimage/foo.png', $linkGenerator->link(new EmptyImage(new Scope('foo'))));
+		$this->assertSame('/media/noimage/foo.png', $linkGenerator->link(new EmptyImage(), ['scope' => 'foo']));
+	}
+
+	public function testScopeDefaultImageResolverRecursion(): void
+	{
+		$linkGenerator = new LinkGenerator($this->storage, $this->fileFactory, new ScopeDefaultImageResolver([
+			'foo' => 'noimage/foo.png',
+		]));
+
+		$this->assertNull($linkGenerator->link(new PersistentImage('foo/bar.png')));
+	}
+
+	private function createStorable(string $name = 'name.jpg'): StorableImageInterface
+	{
+		return new StorableImage(new FilePathUploader($this->imageJpg), $name);
 	}
 
 }
