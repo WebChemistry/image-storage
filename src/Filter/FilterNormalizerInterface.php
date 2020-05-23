@@ -7,11 +7,15 @@ use WebChemistry\ImageStorage\Entity\ImageInterface;
 interface FilterNormalizerInterface
 {
 
-	public function supports(FilterInterface $filter, ImageInterface $image): bool;
+	/**
+	 * @param mixed[] $options
+	 */
+	public function supports(FilterInterface $filter, ImageInterface $image, array $options): bool;
 
 	/**
+	 * @param mixed[] $options
 	 * @return mixed[]
 	 */
-	public function normalize(FilterInterface $filter, ImageInterface $image): array;
+	public function normalize(FilterInterface $filter, ImageInterface $image, array $options): array;
 
 }

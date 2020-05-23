@@ -19,7 +19,7 @@ final class FilterNormalizerCollection implements FilterNormalizerCollectionInte
 	/**
 	 * @inheritDoc
 	 */
-	public function normalize(ImageInterface $image): ?array
+	public function normalize(ImageInterface $image, array $options = []): ?array
 	{
 		$filter = $image->getFilter();
 		if (!$filter) {
@@ -27,8 +27,8 @@ final class FilterNormalizerCollection implements FilterNormalizerCollectionInte
 		}
 
 		foreach ($this->normalizers as $normalizer) {
-			if ($normalizer->supports($filter, $image)) {
-				return $normalizer->normalize($filter, $image);
+			if ($normalizer->supports($filter, $image, $options)) {
+				return $normalizer->normalize($filter, $image, $options);
 			}
 		}
 
