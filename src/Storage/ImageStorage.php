@@ -13,8 +13,6 @@ use WebChemistry\ImageStorage\Event\PersistedImageEvent;
 use WebChemistry\ImageStorage\Event\RemovedImageEvent;
 use WebChemistry\ImageStorage\Exceptions\InvalidArgumentException;
 use WebChemistry\ImageStorage\File\FileFactoryInterface;
-use WebChemistry\ImageStorage\File\FileInterface;
-use WebChemistry\ImageStorage\File\FileProviderInterface;
 use WebChemistry\ImageStorage\Filter\FilterProcessorInterface;
 use WebChemistry\ImageStorage\Filter\VoidFilterProcessor;
 use WebChemistry\ImageStorage\ImageStorageInterface;
@@ -44,15 +42,6 @@ class ImageStorage implements ImageStorageInterface
 		$this->dispatcher = $dispatcher;
 	}
 
-	protected function createFile(ImageInterface $image): FileInterface
-	{
-		if ($image instanceof FileProviderInterface) {
-			return $image->provideFile();
-		}
-
-		return $this->fileFactory->create($image);
-	}
-
 	public function persist(ImageInterface $image): PersistentImageInterface
 	{
 		if ($image instanceof EmptyImageInterface) {
@@ -62,22 +51,22 @@ class ImageStorage implements ImageStorageInterface
 		$close = $image;
 
 		$filter = $image->getFilter();
-		$file = $this->createFile($image);
+		$file = $this->fileFactory->create($image);
 
 		if ($image instanceof StorableImageInterface) {
 			$image = $image->withName($this->fileNameResolver->resolve($file));
 
-			$file = $this->createFile($image);
+			$file = $this->fileFactory->create($image);
 		} elseif ($image instanceof PersistentImageInterface && !$filter) {
 			throw new InvalidArgumentException('Cannot persist persistent image with no filter');
 		}
 
-		$this->createFile($image)
+		$this->fileFactory->create($image)
 			->setContent(
-				$this->filterProcessor->process($file, $this->createFile($image->getOriginal()))
+				$this->filterProcessor->process($file, $this->fileFactory->create($image->getOriginal()))
 			);
 
-		$persistent = new PersistentImage($close->getId());
+		$persistent = new PersistentImage($image->getId());
 		if ($filter) {
 			$persistent = $persistent->withFilterObject($filter);
 		}
@@ -99,7 +88,7 @@ class ImageStorage implements ImageStorageInterface
 			throw new InvalidArgumentException('Cannot remove an empty image');
 		}
 
-		$this->createFile($image)
+		$this->fileFactory->create($image)
 			->delete();
 
 		if ($this->dispatcher) {
