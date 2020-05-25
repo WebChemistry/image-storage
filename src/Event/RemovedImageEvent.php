@@ -21,7 +21,7 @@ final class RemovedImageEvent implements StoppableEventInterface
 		$this->image = $image;
 	}
 
-	public function getImage(): PersistentImageInterface
+	public function getSource(): PersistentImageInterface
 	{
 		return $this->image;
 	}

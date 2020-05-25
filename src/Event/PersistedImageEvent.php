@@ -30,7 +30,7 @@ final class PersistedImageEvent implements StoppableEventInterface
 		return $this->source;
 	}
 
-	public function getImage(): PersistentImageInterface
+	public function getResult(): PersistentImageInterface
 	{
 		return $this->image;
 	}
