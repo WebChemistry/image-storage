@@ -130,4 +130,9 @@ final class PromisedImage implements PromisedImageInterface
 		return !$this->result;
 	}
 
+	public function close(): void
+	{
+		$this->getResult()->close();
+	}
+
 }

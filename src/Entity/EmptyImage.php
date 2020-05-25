@@ -36,4 +36,9 @@ final class EmptyImage extends Image implements EmptyImageInterface
 		throw new EmptyImageException(sprintf('Cannot call %s on empty image', __METHOD__));
 	}
 
+	public function close(): void
+	{
+		throw new EmptyImageException(sprintf('Cannot call %s on empty image', __METHOD__));
+	}
+
 }
