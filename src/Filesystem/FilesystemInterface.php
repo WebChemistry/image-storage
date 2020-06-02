@@ -21,6 +21,11 @@ interface FilesystemInterface
 	public function delete(PathInfoInterface $path);
 
 	/**
+	 * @return mixed[]
+	 */
+	public function listContents(string $path): array;
+
+	/**
 	 * @param mixed $content
 	 * @param mixed[] $config
 	 */

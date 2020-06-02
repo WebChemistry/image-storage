@@ -42,6 +42,14 @@ abstract class FilesystemAbstract implements FilesystemInterface
 	/**
 	 * @inheritDoc
 	 */
+	public function listContents(string $path): array
+	{
+		return $this->adapter->listContents($path);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public function put(PathInfoInterface $path, $content, array $config = []): void
 	{
 		$this->adapter->put($path->toString(), $content, $config);
