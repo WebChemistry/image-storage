@@ -21,6 +21,10 @@ final class FileFactory implements FileFactoryInterface
 
 	public function create(ImageInterface $image): FileInterface
 	{
+		if ($image instanceof FileProviderInterface) {
+			return $image->provideFile();
+		}
+
 		return new File($image, $this->filesystem, $this->pathInfoFactory->create($image));
 	}
 
