@@ -11,6 +11,13 @@ use WebChemistry\ImageStorage\File\FileFactory;
 use WebChemistry\ImageStorage\Filesystem\LocalFilesystem;
 use WebChemistry\ImageStorage\LinkGenerator\LinkGenerator;
 use WebChemistry\ImageStorage\PathInfo\PathInfoFactory;
+use WebChemistry\ImageStorage\Persister\EmptyImagePersister;
+use WebChemistry\ImageStorage\Persister\PersistentImagePersister;
+use WebChemistry\ImageStorage\Persister\PersisterRegistry;
+use WebChemistry\ImageStorage\Persister\StorableImagePersister;
+use WebChemistry\ImageStorage\Remover\EmptyImageRemover;
+use WebChemistry\ImageStorage\Remover\PersistentImageRemover;
+use WebChemistry\ImageStorage\Remover\RemoverRegistry;
 use WebChemistry\ImageStorage\Resolver\DefaultImageResolvers\NullDefaultImageResolver;
 use WebChemistry\ImageStorage\Resolver\DefaultImageResolvers\ScopeDefaultImageResolver;
 use WebChemistry\ImageStorage\Resolver\FileNameResolvers\OriginalFileNameResolver;
@@ -40,12 +47,21 @@ class LocalStorageTest extends FileTestCase
 
 		$processor = new FilterProcessor($registry);
 		$this->fileFactory = new FileFactory(
-			new LocalFilesystem($this->getAbsolutePath()),
-			new PathInfoFactory()
+			$filesystem = new LocalFilesystem($this->getAbsolutePath()),
+			$pathInfoFactory = new PathInfoFactory()
 		);
 		$defaultImageResolver = new NullDefaultImageResolver();
 
-		$this->storage = new ImageStorage($this->fileFactory, new OriginalFileNameResolver(), $processor);
+		$persisterRegistry = new PersisterRegistry();
+		$persisterRegistry->add(new EmptyImagePersister());
+		$persisterRegistry->add(new PersistentImagePersister($this->fileFactory, $processor));
+		$persisterRegistry->add(new StorableImagePersister($this->fileFactory, $processor, new OriginalFileNameResolver()));
+
+		$removerRegistry = new RemoverRegistry();
+		$removerRegistry->add(new EmptyImageRemover());
+		$removerRegistry->add(new PersistentImageRemover($this->fileFactory, $pathInfoFactory, $filesystem));
+
+		$this->storage = new ImageStorage($persisterRegistry, $removerRegistry);
 		$this->linkGenerator = new LinkGenerator($this->storage, $this->fileFactory, $defaultImageResolver);
 	}
 
@@ -129,6 +145,22 @@ class LocalStorageTest extends FileTestCase
 		$size = getimagesize($this->getAbsolutePath('cache/_thumbnail/name.jpg'));
 		$this->assertSame(15, $size[0]);
 		$this->assertSame(15, $size[1]);
+	}
+
+	public function testFilterImageAndDelete(): void
+	{
+		$image = new StorableImage(new FilePathUploader($this->imageJpg), 'name.jpg');
+		$persistent = $this->storage->persist($image);
+
+		$this->storage->persist($persistent->withFilter('thumbnail'));
+
+		$this->assertTempFileExists('media/name.jpg');
+		$this->assertTempFileExists('cache/_thumbnail/name.jpg');
+
+		$this->storage->remove($persistent);
+
+		$this->assertTempFileNotExists('media/name.jpg');
+		$this->assertTempFileNotExists('cache/_thumbnail/name.jpg');
 	}
 
 	public function testToUrlWithFilter(): void

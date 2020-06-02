@@ -6,6 +6,13 @@ use WebChemistry\ImageStorage\Entity\StorableImage;
 use WebChemistry\ImageStorage\File\FileFactory;
 use WebChemistry\ImageStorage\Filesystem\LocalFilesystem;
 use WebChemistry\ImageStorage\PathInfo\PathInfoFactory;
+use WebChemistry\ImageStorage\Persister\EmptyImagePersister;
+use WebChemistry\ImageStorage\Persister\PersistentImagePersister;
+use WebChemistry\ImageStorage\Persister\PersisterRegistry;
+use WebChemistry\ImageStorage\Persister\StorableImagePersister;
+use WebChemistry\ImageStorage\Remover\EmptyImageRemover;
+use WebChemistry\ImageStorage\Remover\PersistentImageRemover;
+use WebChemistry\ImageStorage\Remover\RemoverRegistry;
 use WebChemistry\ImageStorage\Resolver\FileNameResolvers\OriginalFileNameResolver;
 use WebChemistry\ImageStorage\Storage\ImageStorage;
 use WebChemistry\ImageStorage\Testing\FileTestCase;
@@ -32,11 +39,20 @@ class TransactionTest extends FileTestCase
 
 		$processor = new FilterProcessor($registry);
 		$fileFactory = new FileFactory(
-			new LocalFilesystem($this->getAbsolutePath()),
-			new PathInfoFactory()
+			$filesystem = new LocalFilesystem($this->getAbsolutePath()),
+			$pathInfoFactory = new PathInfoFactory()
 		);
 
-		$this->storage = $storage = new ImageStorage($fileFactory, new OriginalFileNameResolver(), $processor);
+		$persisterRegistry = new PersisterRegistry();
+		$persisterRegistry->add(new EmptyImagePersister());
+		$persisterRegistry->add(new PersistentImagePersister($fileFactory, $processor));
+		$persisterRegistry->add(new StorableImagePersister($fileFactory, $processor, new OriginalFileNameResolver()));
+
+		$removerRegistry = new RemoverRegistry();
+		$removerRegistry->add(new EmptyImageRemover());
+		$removerRegistry->add(new PersistentImageRemover($fileFactory, $pathInfoFactory, $filesystem));
+
+		$this->storage = $storage = new ImageStorage($persisterRegistry, $removerRegistry);
 
 		$this->transactionFactory = new TransactionFactory($storage, $fileFactory);
 	}
