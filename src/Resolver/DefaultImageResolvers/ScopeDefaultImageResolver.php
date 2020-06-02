@@ -47,10 +47,12 @@ final class ScopeDefaultImageResolver implements DefaultImageResolverInterface
 			return null;
 		}
 
-		return $linkGenerator->link(
-			new PersistentImage($this->lookup[$default]),
-			$this->setRecursion($options)
-		);
+		$result = new PersistentImage($this->lookup[$default]);
+		if ($image && $image->hasFilter()) {
+			$result = $result->withFilterObject($image->getFilter());
+		}
+
+		return $linkGenerator->link($result, $this->setRecursion($options));
 	}
 
 	private function getScopeFromImage(?PersistentImageInterface $image): ?string
