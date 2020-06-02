@@ -134,6 +134,11 @@ abstract class Image implements ImageInterface
 		return $clone;
 	}
 
+	public function isEmpty(): bool
+	{
+		return $this instanceof EmptyImageInterface;
+	}
+
 	public function isClosed(): bool
 	{
 		return $this->closed;

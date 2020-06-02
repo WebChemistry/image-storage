@@ -22,6 +22,8 @@ interface ImageInterface
 
 	public function isClosed(): bool;
 
+	public function isEmpty(): bool;
+
 	/**
 	 * @return static
 	 */

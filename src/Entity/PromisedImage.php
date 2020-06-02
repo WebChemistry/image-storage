@@ -93,6 +93,10 @@ final class PromisedImage implements PromisedImageInterface
 		return $this->getResult()->isClosed();
 	}
 
+	public function isEmpty(): bool
+	{
+		return $this->getResult()->isClosed();
+	}
 
 	public function process(callable $action): void
 	{
