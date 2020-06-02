@@ -4,7 +4,6 @@ namespace WebChemistry\ImageStorage\Remover;
 
 use WebChemistry\ImageStorage\Entity\EmptyImageInterface;
 use WebChemistry\ImageStorage\Entity\PersistentImageInterface;
-use WebChemistry\ImageStorage\Exceptions\InvalidArgumentException;
 
 final class EmptyImageRemover implements RemoverInterface
 {

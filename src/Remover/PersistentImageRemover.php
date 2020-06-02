@@ -33,7 +33,7 @@ final class PersistentImageRemover implements RemoverInterface
 	{
 		$this->removeOriginal($image);
 		$this->removeFiltered($image);
-		
+
 		$image->close();
 	}
 
