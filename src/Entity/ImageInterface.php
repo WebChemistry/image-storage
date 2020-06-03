@@ -10,18 +10,21 @@ interface ImageInterface
 
 	/**
 	 * Combination of scope and name
+	 *
 	 * @example scope/image.jpg
 	 */
 	public function getId(): string;
 
 	/**
 	 * Name of image
+	 *
 	 * @example image.jpg
 	 */
 	public function getName(): string;
 
 	/**
 	 * Suffix of image
+	 *
 	 * @example jpg
 	 */
 	public function getSuffix(): ?string;
