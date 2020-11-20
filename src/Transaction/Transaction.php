@@ -2,12 +2,16 @@
 
 namespace WebChemistry\ImageStorage\Transaction;
 
+use Google\Cloud\Core\Exception\NotFoundException;
+use InvalidArgumentException;
 use Throwable;
+use WebChemistry\ImageStorage\Entity\EmptyImage;
 use WebChemistry\ImageStorage\Entity\ImageInterface;
 use WebChemistry\ImageStorage\Entity\PersistentImageInterface;
 use WebChemistry\ImageStorage\Entity\PromisedImage;
 use WebChemistry\ImageStorage\Entity\PromisedImageInterface;
 use WebChemistry\ImageStorage\Entity\StorableImage;
+use WebChemistry\ImageStorage\Exceptions\FileNotFoundException;
 use WebChemistry\ImageStorage\Exceptions\RollbackFailedException;
 use WebChemistry\ImageStorage\Exceptions\TransactionException;
 use WebChemistry\ImageStorage\File\FileFactoryInterface;
@@ -105,12 +109,40 @@ final class Transaction implements TransactionInterface
 
 	public function persist(ImageInterface $image): PromisedImageInterface
 	{
-		return $this->persist[] = new PromisedImage($image);
+		if ($image instanceof PromisedImageInterface) {
+			foreach ($this->remove as $key => $removed) {
+				if ($removed->getPromisedImage() === $image) {
+					unset($this->remove[$key]);
+
+					$image->process(fn (ImageInterface $img) => $img);
+
+					return $image;
+				}
+			}
+
+			throw new InvalidArgumentException(sprintf('Cannot persist promised image twice'));
+		}
+
+		return $this->persist[] = new PromisedImage($image, false);
 	}
 
 	public function remove(PersistentImageInterface $image): PromisedImageInterface
 	{
-		$promised = new PromisedImage($image);
+		if ($image instanceof PromisedImageInterface) {
+			foreach ($this->persist as $key => $persisted) {
+				if ($image === $persisted) {
+					unset($this->persist[$key]);
+
+					$image->process(fn (ImageInterface $image) => new EmptyImage(clone $image->getScope()));
+
+					return $image;
+				}
+			}
+
+			throw new InvalidArgumentException(sprintf('Cannot remove promised image twice'));
+		}
+
+		$promised = new PromisedImage($image, true);
 		$this->remove[] = new RemoveImage($image, $promised);
 
 		return $promised;
@@ -119,11 +151,15 @@ final class Transaction implements TransactionInterface
 	private function commitRemove(): void
 	{
 		foreach ($this->remove as $key => $image) {
-			$this->removed[] = new RemovedImage(
-				clone $image->getSource(),
-				$image->getPromisedImage(),
-				$this->fileFactory->create($image->getSource())->getContent()
-			);
+			try {
+				$this->removed[] = new RemovedImage(
+					clone $image->getSource(),
+					$image->getPromisedImage(),
+					$this->fileFactory->create($image->getSource())->getContent()
+				);
+			} catch (NotFoundException | FileNotFoundException $e) {
+				// object not exists continue
+			}
 		}
 
 		foreach ($this->removed as $image) {
