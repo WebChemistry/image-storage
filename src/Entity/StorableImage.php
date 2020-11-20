@@ -22,9 +22,9 @@ class StorableImage extends Image implements StorableImageInterface
 		return $this->uploader;
 	}
 
-	final public function close(): void
+	final public function close(?string $reason = null): void
 	{
-		$this->setClosed();
+		$this->setClosed($reason);
 	}
 
 }

@@ -35,7 +35,7 @@ final class StorableImagePersister extends ImagePersisterAbstract
 		$result = $image->withName($this->fileNameResolver->resolve($this->fileFactory->create($image)));
 
 		$this->save($result);
-		$image->close();
+		$image->close('image persisted');
 
 		return $result;
 	}

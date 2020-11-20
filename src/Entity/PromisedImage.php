@@ -16,9 +16,12 @@ final class PromisedImage implements PromisedImageInterface
 	/** @var callable[] */
 	private array $then = [];
 
-	public function __construct(ImageInterface $source)
+	private bool $remove;
+
+	public function __construct(ImageInterface $source, bool $remove)
 	{
 		$this->source = $source;
+		$this->remove = $remove;
 	}
 
 	public function getId(): string
@@ -95,7 +98,25 @@ final class PromisedImage implements PromisedImageInterface
 
 	public function isEmpty(): bool
 	{
-		return $this->getResult()->isClosed();
+		if (!$this->isPending()) {
+			return $this->getResult()->isEmpty();
+		}
+
+		return $this->remove;
+	}
+
+	public function isPromise(): bool
+	{
+		return true;
+	}
+
+	public function equalTo(ImageInterface $image): bool
+	{
+		if (!$this->isEmpty() || !$image->isEmpty()) {
+			return false;
+		}
+
+		return $this->getId() === $image->getId();
 	}
 
 	public function process(callable $action): void
@@ -134,9 +155,9 @@ final class PromisedImage implements PromisedImageInterface
 		return !$this->result;
 	}
 
-	public function close(): void
+	public function close(?string $reason = null): void
 	{
-		$this->getResult()->close();
+		$this->getResult()->close($reason);
 	}
 
 }

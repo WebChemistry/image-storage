@@ -54,6 +54,10 @@ interface ImageInterface
 	 */
 	public function isEmpty(): bool;
 
+	public function isPromise(): bool;
+
+	public function equalTo(ImageInterface $image): bool;
+
 	/**
 	 * Returns image without filter
 	 *

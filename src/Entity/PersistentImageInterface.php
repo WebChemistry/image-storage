@@ -5,6 +5,6 @@ namespace WebChemistry\ImageStorage\Entity;
 interface PersistentImageInterface extends ImageInterface
 {
 
-	public function close(): void;
+	public function close(?string $reason = null): void;
 
 }

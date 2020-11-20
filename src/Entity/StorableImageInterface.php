@@ -9,7 +9,7 @@ interface StorableImageInterface extends ImageInterface
 
 	public function getUploader(): UploaderInterface;
 
-	public function close(): void;
+	public function close(?string $reason = null): void;
 
 	public function isClosed(): bool;
 

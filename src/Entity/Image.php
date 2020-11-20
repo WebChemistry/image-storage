@@ -18,6 +18,8 @@ abstract class Image implements ImageInterface
 
 	private bool $closed = false;
 
+	private ?string $closedReason = null;
+
 	public function __construct(string $name, ?Scope $scope = null)
 	{
 		$this->name = ltrim($name, '/');
@@ -68,6 +70,15 @@ abstract class Image implements ImageInterface
 		$this->throwIfClosed();
 
 		return (bool) $this->filter;
+	}
+
+	public function equalTo(ImageInterface $image): bool
+	{
+		if (!$this->isEmpty() || !$image->isEmpty()) {
+			return false;
+		}
+
+		return $this->getId() === $image->getId();
 	}
 
 	/**
@@ -139,13 +150,19 @@ abstract class Image implements ImageInterface
 		return $this instanceof EmptyImageInterface;
 	}
 
+	public function isPromise(): bool
+	{
+		return false;
+	}
+
 	public function isClosed(): bool
 	{
 		return $this->closed;
 	}
 
-	protected function setClosed(): void
+	protected function setClosed(?string $reason = null): void
 	{
+		$this->closedReason = $reason;
 		$this->closed = true;
 	}
 
@@ -153,7 +170,11 @@ abstract class Image implements ImageInterface
 	{
 		if ($this->closed) {
 			throw new ClosedImageException(
-				sprintf('Image %s is closed', $this->scope->toStringWithTrailingSlash() . $this->name)
+				sprintf(
+					'Image %s is closed, reason: %s',
+					$this->scope->toStringWithTrailingSlash() . $this->name,
+					$this->closedReason ?: 'not specified'
+				)
 			);
 		}
 	}
