@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace Project\Tests;
+namespace WebChemistry\ImageStorage\Testing\Functional;
 
 use WebChemistry\ImageStorage\Entity\EmptyImage;
 use WebChemistry\ImageStorage\Entity\PersistentImage;
@@ -125,7 +125,7 @@ class LocalStorageTest extends FileTestCase
 		$image = new StorableImage(new FilePathUploader($this->imageJpg), 'name.jpg');
 		$image = $image->withFilter('thumbnail');
 
-		$persistent = $this->storage->persist($image);
+		$this->storage->persist($image);
 
 		$this->assertTempFileExists('media/name.jpg');
 		$size = getimagesize($this->getAbsolutePath('media/name.jpg'));

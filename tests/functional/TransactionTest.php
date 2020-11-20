@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace Project\Tests;
+namespace WebChemistry\ImageStorage\Testing\Functional;
 
 use WebChemistry\ImageStorage\Entity\StorableImage;
 use WebChemistry\ImageStorage\File\FileFactory;
@@ -122,6 +122,31 @@ class TransactionTest extends FileTestCase
 		$transaction->rollback();
 
 		$this->assertTempFileNotExists('media/image.jpg');
+	}
+
+	public function testPersistAndRemoveSameImage(): void
+	{
+		$transaction = $this->transactionFactory->create();
+		$image = $transaction->persist(new StorableImage(new FilePathUploader($this->imageJpg), 'image.jpg'));
+		$transaction->remove($image);
+
+		$transaction->commit();
+
+		$this->assertTrue($image->isEmpty());
+
+		$this->assertTempFileNotExists('media/image.jpg');
+	}
+
+	public function testRemoveAndPersistSameImage(): void
+	{
+		$transaction = $this->transactionFactory->create();
+		$persistent = $this->storage->persist(new StorableImage(new FilePathUploader($this->imageJpg), 'image.jpg'));
+		$image = $transaction->remove($persistent);
+		$transaction->persist($image);
+
+		$transaction->commit();
+
+		$this->assertTempFileExists('media/image.jpg');
 	}
 
 }

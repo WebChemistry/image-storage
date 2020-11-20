@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace Project\Tests;
+namespace WebChemistry\ImageStorage\Testing\Unit;
 
 use Codeception\Test\Unit;
 use WebChemistry\ImageStorage\Entity\Image;
