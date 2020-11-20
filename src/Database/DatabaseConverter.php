@@ -14,7 +14,12 @@ use WebChemistry\ImageStorage\Exceptions\InvalidArgumentException;
 final class DatabaseConverter implements DatabaseConverterInterface
 {
 
-	private bool $nullable = true;
+	private bool $nullable;
+
+	public function __construct(bool $nullable = true)
+	{
+		$this->nullable = $nullable;
+	}
 
 	public function convertToDatabase(?ImageInterface $image): ?string
 	{
