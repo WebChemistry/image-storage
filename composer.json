@@ -5,7 +5,8 @@
 		"php": ">=7.4",
 		"nette/utils": "^3.0",
 		"league/flysystem": "^1.0",
-		"psr/event-dispatcher": "^1.0"
+		"psr/event-dispatcher": "^1.0",
+		"ninjify/qa": "^0.10.0"
 	},
     "require-dev": {
         "codeception/codeception": "^4.1",
@@ -28,18 +29,27 @@
 	},
     "autoload-dev": {
         "psr-4": {
-            "WebChemistry\\ImageStorage\\Testing\\": "tests/src"
+            "WebChemistry\\ImageStorage\\Testing\\": "tests/src",
+            "WebChemistry\\ImageStorage\\Testing\\Unit\\": "tests/unit",
+            "WebChemistry\\ImageStorage\\Testing\\Functional\\": "tests/functional"
         }
     },
     "scripts": {
         "check": [
-            "@cs",
+            "@qa",
             "@phpstan",
             "@tests"
         ],
+        "qa": [
+            "@lint",
+            "@cs",
+            "@phpstan"
+        ],
         "tests": "vendor/bin/codecept run",
         "phpstan": "vendor/bin/phpstan analyse -l 8 -c phpstan.neon src",
-        "cs": "vendor/bin/codesniffer",
-        "cs-fix": "vendor/bin/codefixer"
+        "cs": "vendor/bin/codesniffer src tests",
+        "csf": "vendor/bin/codefixer src tests",
+        "lint": "vendor/bin/linter",
+        "coverage": "vendor/bin/codecept run --coverage --coverage-xml"
     }
 }

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<ruleset>
+	<!-- Contributte Coding Standard -->
+	<rule ref="./vendor/ninjify/coding-standard/contributte.xml">
+		<exclude name="Squiz.Commenting.VariableComment.Missing" />
+		<exclude name="SlevomatCodingStandard.Classes.SuperfluousInterfaceNaming.SuperfluousSuffix" />
+		<exclude name="SlevomatCodingStandard.Classes.SuperfluousAbstractClassNaming.SuperfluousSuffix" />
+	</rule>
+
+	<!-- Specific rules -->
+	<rule ref="SlevomatCodingStandard.Files.TypeNameMatchesFileName">
+		<properties>
+			<property name="rootNamespaces" type="array" value="
+				src=>WebChemistry\ImageStorage,
+				tests/src=>WebChemistry\ImageStorage\Testing,
+				tests/functional=>WebChemistry\ImageStorage\Testing\Functional,
+				tests/unit=>WebChemistry\ImageStorage\Testing\Unit,
+			"/>
+		</properties>
+	</rule>
+	<exclude-pattern>tests/_support</exclude-pattern>
+</ruleset>
