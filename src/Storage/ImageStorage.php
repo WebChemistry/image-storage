@@ -52,6 +52,10 @@ class ImageStorage implements ImageStorageInterface
 
 	public function remove(PersistentImageInterface $image): PersistentImageInterface
 	{
+		if ($image->isClosed()) {
+			return new EmptyImage();
+		}
+
 		$clone = clone $image;
 		$this->removerRegistry->remove($image);
 
