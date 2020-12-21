@@ -5,8 +5,7 @@
 		"php": ">=7.4",
 		"nette/utils": "^3.0",
 		"league/flysystem": "^1.0",
-		"psr/event-dispatcher": "^1.0",
-		"ninjify/qa": "^0.10.0"
+		"psr/event-dispatcher": "^1.0"
 	},
     "require-dev": {
         "codeception/codeception": "^4.1",
@@ -14,7 +13,7 @@
         "phpstan/phpstan": "^0.12.11",
         "phpstan/extension-installer": "^1.0",
         "phpstan/phpstan-deprecation-rules": "^0.12.2",
-        "warengo/qa": "2.0.1",
+        "ninjify/qa": "^0.10.0",
         "codeception/module-phpbrowser": "^1.0.0",
 		"ramsey/uuid": "^4.0",
 		"doctrine/dbal": "^2.10",
